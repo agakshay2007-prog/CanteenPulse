@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CanteenPulse | Good Food. Less Waiting.</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            forest: {
+              50: '#F2F8F4',
+              100: '#E1EFE6',
+              200: '#C2DFCE',
+              500: '#2E7D32',
+              600: '#1B5E20',
+              700: '#144A19',
+              800: '#0F3813',
+              900: '#09240C'
+            },
+            mint: {
+              50: '#F0FDF4',
+              100: '#DCFCE7',
+              200: '#BBF7D0',
+              300: '#86EFAC',
+              500: '#22C55E',
+              600: '#16A34A',
+              700: '#15803D'
+            },
+            cream: {
+              50: '#FCFBF7',
+              100: '#F7F6EE',
+              200: '#EFEFE2'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#FAF9F5] text-slate-800 antialiased selection:bg-mint-200 selection:text-forest-800 min-h-screen">
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>

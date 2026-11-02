@@ -1,0 +1,156 @@
+[
+  {
+    "_id": "6ae89a4f2d9b407d406924de",
+    "orderNumber": "CP-105",
+    "student": {
+      "name": "Vikram Malhotra",
+      "studentId": "22BCSE015",
+      "phone": "9876500001"
+    },
+    "items": [
+      {
+        "menuItemId": "6ae89a08ec82e5f8a27b06fe",
+        "name": "Crispy Masala Dosa",
+        "price": 60,
+        "quantity": 2,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 120,
+    "total": 120,
+    "pickupTime": "1:00 PM - 1:15 PM",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "status": "Preparing",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "",
+    "createdAt": "2026-11-02T14:12:31.418Z",
+    "updatedAt": "2026-11-02T14:12:31.438Z"
+  },
+  {
+    "_id": "6ae89a40dd95ef2ace7eb84d",
+    "orderNumber": "CP-104",
+    "student": {
+      "name": "Vikram Malhotra",
+      "studentId": "22BCSE015",
+      "phone": "9876500001"
+    },
+    "items": [
+      {
+        "menuItemId": "6ae89a08ec82e5f8a27b06fe",
+        "name": "Crispy Masala Dosa",
+        "price": 60,
+        "quantity": 2,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 120,
+    "total": 120,
+    "pickupTime": "1:00 PM - 1:15 PM",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "status": "Preparing",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "",
+    "createdAt": "2026-11-02T14:12:16.045Z",
+    "updatedAt": "2026-11-02T14:12:16.059Z"
+  },
+  {
+    "_id": "6ae89a083ef079ad40fbccd7",
+    "orderNumber": "CP-103",
+    "student": {
+      "name": "Vikram Malhotra",
+      "studentId": "22BCSE015",
+      "phone": "9876500001"
+    },
+    "items": [
+      {
+        "menuItemId": "6ae89a08ec82e5f8a27b06fe",
+        "name": "Crispy Masala Dosa",
+        "price": 60,
+        "quantity": 2,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 120,
+    "total": 120,
+    "pickupTime": "1:00 PM - 1:15 PM",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "status": "Preparing",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "",
+    "createdAt": "2026-11-02T14:11:20.130Z",
+    "updatedAt": "2026-11-02T14:11:20.150Z"
+  },
+  {
+    "_id": "6ae89a083f0bd788b07ba6a2",
+    "orderNumber": "CP-101",
+    "student": {
+      "name": "Rohan Sharma",
+      "studentId": "22BCSE104",
+      "phone": "9876543210"
+    },
+    "items": [
+      {
+        "menuItemId": "sample-1",
+        "name": "Crispy Masala Dosa",
+        "price": 60,
+        "quantity": 1,
+        "specialInstructions": "Extra sambar please"
+      },
+      {
+        "menuItemId": "sample-2",
+        "name": "Cardamom Cutting Chai",
+        "price": 15,
+        "quantity": 1,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 75,
+    "total": 75,
+    "pickupTime": "1:00 PM - 1:15 PM",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "status": "Ready for Pickup",
+    "paymentMethod": "UPI / Online",
+    "paymentStatus": "Paid",
+    "notes": "Hot and ready at counter",
+    "createdAt": "2026-11-02T13:51:20.044Z",
+    "updatedAt": "2026-11-02T13:51:20.044Z"
+  },
+  {
+    "_id": "6ae89a085719746fa5c79438",
+    "orderNumber": "CP-102",
+    "student": {
+      "name": "Meera Iyer",
+      "studentId": "23BIT045",
+      "phone": "9845123456"
+    },
+    "items": [
+      {
+        "menuItemId": "sample-3",
+        "name": "Schezwan Veg Hakka Noodles",
+        "price": 85,
+        "quantity": 1,
+        "specialInstructions": "Medium spicy"
+      },
+      {
+        "menuItemId": "sample-4",
+        "name": "Fresh Mint Lime Cooler",
+        "price": 35,
+        "quantity": 1,
+        "specialInstructions": "Less sweet"
+      }
+    ],
+    "subtotal": 120,
+    "total": 120,
+    "pickupTime": "1:15 PM - 1:30 PM",
+    "pickupCounter": "Counter #2 (Snack & Chinese)",
+    "status": "Preparing",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "In wok now",
+    "createdAt": "2026-11-02T14:01:20.044Z",
+    "updatedAt": "2026-11-02T14:01:20.044Z"
+  }
+]

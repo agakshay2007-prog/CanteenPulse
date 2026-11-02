@@ -1,0 +1,59 @@
+[
+  {
+    "_id": "6ae89a4f109e9323782ad62c",
+    "menuItemId": "6ae89a08ec82e5f8a27b06fe",
+    "dishName": "Crispy Masala Dosa",
+    "studentName": "Vikram Malhotra",
+    "rating": 5,
+    "comment": "Crispy golden crepe, fresh coconut chutney!",
+    "createdAt": "2026-11-02T14:12:31.434Z",
+    "updatedAt": "2026-11-02T14:12:31.434Z"
+  },
+  {
+    "_id": "6ae89a40672c6340ced95407",
+    "menuItemId": "6ae89a08ec82e5f8a27b06fe",
+    "dishName": "Crispy Masala Dosa",
+    "studentName": "Vikram Malhotra",
+    "rating": 5,
+    "comment": "Crispy golden crepe, fresh coconut chutney!",
+    "createdAt": "2026-11-02T14:12:16.054Z",
+    "updatedAt": "2026-11-02T14:12:16.054Z"
+  },
+  {
+    "_id": "6ae89a082b470d41fb6d8e9b",
+    "menuItemId": "6ae89a08ec82e5f8a27b06fe",
+    "dishName": "Crispy Masala Dosa",
+    "studentName": "Vikram Malhotra",
+    "rating": 5,
+    "comment": "Crispy golden crepe, fresh coconut chutney!",
+    "createdAt": "2026-11-02T14:11:20.145Z",
+    "updatedAt": "2026-11-02T14:11:20.145Z"
+  },
+  {
+    "_id": "6ae89a085ec7d948b5331d92",
+    "dishName": "Crispy Masala Dosa",
+    "studentName": "Ananya Verma",
+    "rating": 5,
+    "comment": "Best breakfast on campus! Sambar is hot and chutney is made fresh daily.",
+    "createdAt": "2026-11-02T12:11:20.044Z",
+    "updatedAt": "2026-11-02T12:11:20.044Z"
+  },
+  {
+    "_id": "6ae89a08e0673c79e6f38fff",
+    "dishName": "Chilled Cold Coffee with Ice Cream",
+    "studentName": "Karthik Raja",
+    "rating": 5,
+    "comment": "Perfect thick coffee after long afternoon lectures. 10/10.",
+    "createdAt": "2026-11-02T10:11:20.044Z",
+    "updatedAt": "2026-11-02T10:11:20.044Z"
+  },
+  {
+    "_id": "6ae89a08c3976c23995e45b7",
+    "dishName": "Veg Dum Biryani with Raita",
+    "studentName": "Sneha Patel",
+    "rating": 4,
+    "comment": "Super filling lunch portion. Saffron aroma was fantastic.",
+    "createdAt": "2026-11-01T14:11:20.044Z",
+    "updatedAt": "2026-11-01T14:11:20.044Z"
+  }
+]

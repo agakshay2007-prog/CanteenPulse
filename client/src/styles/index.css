@@ -1,0 +1,79 @@
+/* CanteenPulse Global Theme Styles */
+
+@layer base {
+  body {
+    background: radial-gradient(circle at 15% 15%, #F5FAF6 0%, #FAF9F5 100%);
+    color: #1E293B;
+  }
+}
+
+/* Veg / Non-Veg Badges */
+.veg-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid #16A34A;
+  border-radius: 3px;
+  background: white;
+}
+.veg-icon::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #16A34A;
+}
+
+.non-veg-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid #DC2626;
+  border-radius: 3px;
+  background: white;
+}
+.non-veg-icon::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #DC2626;
+}
+
+/* Card Hover Elevation */
+.food-card-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.food-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 30px -10px rgba(22, 101, 52, 0.12);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F5F2;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Pulse animation */
+@keyframes pulseSubtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.15); }
+}
+.pulse-dot {
+  animation: pulseSubtle 2s infinite ease-in-out;
+}

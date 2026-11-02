@@ -1,0 +1,52 @@
+[
+  {
+    "_id": "6ae89a4f30187ef7e51d580f",
+    "crowdLevel": "Busy",
+    "comment": "Meal counter queue is 8 people long",
+    "estimatedWait": "15+ mins",
+    "studentName": "Aman Deep",
+    "studentIdentifier": "aman_verify_test_1793628751426",
+    "createdAt": "2026-11-02T14:12:31.427Z",
+    "updatedAt": "2026-11-02T14:12:31.427Z"
+  },
+  {
+    "_id": "6ae89a0839071f2a1bf88e36",
+    "crowdLevel": "Busy",
+    "comment": "Meal counter queue is 8 people long",
+    "estimatedWait": "15+ mins",
+    "studentName": "Aman Deep",
+    "studentIdentifier": "aman_verify_test",
+    "createdAt": "2026-11-02T14:11:20.135Z",
+    "updatedAt": "2026-11-02T14:11:20.135Z"
+  },
+  {
+    "_id": "6ae89a084c08fca64bbf3c01",
+    "crowdLevel": "Moderate",
+    "comment": "Lunch rush is picking up. Main meal counter has ~6 people.",
+    "estimatedWait": "5-10 mins",
+    "studentName": "Rahul S. (CSE 3rd Yr)",
+    "studentIdentifier": "21BCSE045",
+    "createdAt": "2026-11-02T13:56:20.042Z",
+    "updatedAt": "2026-11-02T13:56:20.042Z"
+  },
+  {
+    "_id": "6ae89a08783eb2f1857d55be",
+    "crowdLevel": "Quiet",
+    "comment": "Quick service at breakfast. Dosa ready in 4 mins.",
+    "estimatedWait": "< 5 mins",
+    "studentName": "Priya M. (ECE 2nd Yr)",
+    "studentIdentifier": "22BECE012",
+    "createdAt": "2026-11-02T13:26:20.044Z",
+    "updatedAt": "2026-11-02T13:26:20.044Z"
+  },
+  {
+    "_id": "6ae89a08ff4a54b9a70e5263",
+    "crowdLevel": "Moderate",
+    "comment": "Beverage & chai counter has a small line, tables available.",
+    "estimatedWait": "5-10 mins",
+    "studentName": "Aditya K. (Mech 4th Yr)",
+    "studentIdentifier": "20BME088",
+    "createdAt": "2026-11-02T12:56:20.044Z",
+    "updatedAt": "2026-11-02T12:56:20.044Z"
+  }
+]

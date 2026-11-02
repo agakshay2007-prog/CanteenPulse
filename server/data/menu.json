@@ -1,0 +1,279 @@
+[
+  {
+    "_id": "6ae89a08ec82e5f8a27b06fe",
+    "name": "Crispy Masala Dosa",
+    "category": "Breakfast",
+    "price": 60,
+    "description": "Golden roasted crepe stuffed with seasoned potato masala, served with coconut chutney & sambar.",
+    "isAvailable": true,
+    "preparationTime": 10,
+    "isVeg": true,
+    "image": "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&auto=format&fit=crop&q=80",
+    "rating": 5,
+    "ratingCount": 3,
+    "isPopular": true,
+    "tags": [
+      "Bestseller",
+      "Campus Favorite"
+    ],
+    "createdAt": "2026-11-02T14:11:20.060Z",
+    "updatedAt": "2026-11-02T14:12:31.444Z"
+  },
+  {
+    "_id": "6ae89a08ae2ebaa13e42c5d4",
+    "name": "Steamed Idli Sambar (2 Pcs)",
+    "category": "Breakfast",
+    "price": 45,
+    "description": "Fluffy steamed rice and lentil cakes served with freshly ground chutney and hot vegetable sambar.",
+    "isAvailable": true,
+    "preparationTime": 5,
+    "isVeg": true,
+    "image": "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&auto=format&fit=crop&q=80",
+    "rating": 4.6,
+    "ratingCount": 28,
+    "isPopular": false,
+    "tags": [
+      "Quick Bite",
+      "Healthy"
+    ],
+    "createdAt": "2026-11-02T14:11:20.060Z",
+    "updatedAt": "2026-11-02T14:11:20.060Z"
+  },
+  {
+    "_id": "6ae89a08c44d213d345bd4c2",
+    "name": "Chole Bhature Platter",
+    "category": "Breakfast",
+    "price": 80,
+    "description": "Two fluffy golden bhature served with spicy chickpea curry, pickled onions, and green chilies.",
+    "isAvailable": true,
+    "preparationTime": 12,
+    "isVeg": true,
+    "image": "https://images.unsplash.com/photo-1626132647523-66f5bf380027?w=600&auto=format&fit=crop&q=80",
+    "rating": 4.9,
+    "ratingCount": 65,
+    "isPopular": true,
+    "tags": [
+      "Bestseller",
+      "Heavy Bite"
+    ],
+    "createdAt": "2026-11-02T14:11:20.060Z",
+    "updatedAt": "2026-11-02T14:11:20.060Z"
+  },
+  {
+    "_id": "6ae89a08e7a240e00e41e1f2",
+    "name": "Veg Dum Biryani with Raita",
+    "category": "Lunch",
+    "price": 110,
+    "description": "Aromatic basmati rice cooked with fresh seasonal vegetables and saffron, served with cool cucumber raita.",
+    "isAvailable": true,
+    "preparationTime": 15,
+    "isVeg": true,
+    "image": "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&auto=format&fit=crop&q=80",
+    "rating": 4.7,
+    "ratingCount": 51,
+    "isPopular": true,
+    "tags": [
+      "Chef Special",
+      "Filling"
+    ],
+    "createdAt": "2026-11-02T14:11:20.060Z",
+    "updatedAt": "2026-11-02T14:11:20.060Z"
+  },
+  {
+    "_id": "6ae89a086b781977432e794f",
+    "name": "Paneer Butter Masala Combo",
+    "category": "Lunch",
+    "price": 120,
+    "description": "Tender cottage cheese cubes simmered in a silky tomato makhani sauce, served with 2 warm naans.",
+    "isAvailable": true,
+    "preparationTime": 15,
+    "isVeg": true,
+    "image": "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=600&auto=format&fit=crop&q=80",
+    "rating": 4.8,
+    "ratingCount": 38,
+    "isPopular": true,
+    "tags": [
+      "Popular",
+      "North Indian"
+    ],
+    "createdAt": "2026-11-02T14:11:20.060Z",
+    "updatedAt": "2026-11-02T14:11:20.060Z"
+  },
+  {
+    "_id": "6ae89a08b668905b94dbd434",
+    "name": "South Indian Mini Thali",
+    "category": "Lunch",
+    "price": 90,
+    "description": "Wholesome balanced meal: Rice, Sambar, Rasam, Veg Kootu, Curd, Appalam, and Kesari sweet.",
+    "isAvailable": true,
+    "preparationTime": 8,
+    "isVeg": true,
+    "image": "https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=600&auto=format&fit=crop&q=80",
+    "rating": 4.5,
+    "ratingCount": 30,
+    "isPopular": false,
+    "tags": [
+      "Healthy",
+      "Traditional"
+    ],
+    "createdAt": "2026-11-02T14:11:20.060Z",
+    "updatedAt": "2026-11-02T14:11:20.060Z"
+  },
+  {
+    "_id": "6ae89a0867c74738f26d3e81",
+    "name": "Crispy Aloo Samosa (2 Pcs)",
+    "category": "Snacks",
+    "price": 30,
+    "description": "Flaky golden pastry cones filled with spicy potato and green peas, served with tangy tamarind chutney.",
+    "isAvailable": true,
+    "preparationTime": 5,
+    "isVeg": true,
+    "image": "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&auto=format&fit=crop&q=80",
+    "rating": 4.7,
+    "ratingCount": 89,
+    "isPopular": true,
+    "tags": [
+      "Budget Friendly",
+      "Quick Bite"
+    ],
+    "createdAt": "2026-11-02T14:11:20.060Z",
+    "updatedAt": "2026-11-02T14:11:20.060Z"
+  },
+  {
+    "_id": "6ae89a0893b5a78442951cd1",
+    "name": "Schezwan Veg Hakka Noodles",
+    "category": "Snacks",
+    "price": 85,
+    "description": "Wok-tossed noodles with shredded cabbage, bell peppers, carrots, and spicy fiery schezwan sauce.",
+    "isAvailable": true,
+    "preparationTime": 12,
+    "isVeg": true,
+    "image": "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=600&auto=format&fit=crop&q=80",
+    "rating": 4.6,
+    "ratingCount": 44,
+    "isPopular": false,
+    "tags": [
+      "Chinese",
+      "Spicy"
+    ],
+    "createdAt": "2026-11-02T14:11:20.060Z",
+    "updatedAt": "2026-11-02T14:11:20.060Z"
+  },
+  {
+    "_id": "6ae89a0820e677556079d0e3",
+    "name": "Grilled Cheese Corn Sandwich",
+    "category": "Snacks",
+    "price": 70,
+    "description": "Golden toasted bread stuffed with sweet corn kernels, melted cheese, and fresh oregano seasonings.",
+    "isAvailable": true,
+    "preparationTime": 10,
+    "isVeg": true,
+    "image": "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&auto=format&fit=crop&q=80",
+    "rating": 4.6,
+    "ratingCount": 23,
+    "isPopular": false,
+    "tags": [
+      "Cafe Special"
+    ],
+    "createdAt": "2026-11-02T14:11:20.060Z",
+    "updatedAt": "2026-11-02T14:11:20.060Z"
+  },
+  {
+    "_id": "6ae89a084ecc73b488cae297",
+    "name": "Chilled Cold Coffee with Ice Cream",
+    "category": "Beverages",
+    "price": 55,
+    "description": "Thick blended iced coffee topped with a creamy scoop of vanilla ice cream and chocolate drizzle.",
+    "isAvailable": true,
+    "preparationTime": 5,
+    "isVeg": true,
+    "image": "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=600&auto=format&fit=crop&q=80",
+    "rating": 4.9,
+    "ratingCount": 110,
+    "isPopular": true,
+    "tags": [
+      "Campus Favorite",
+      "Bestseller"
+    ],
+    "createdAt": "2026-11-02T14:11:20.060Z",
+    "updatedAt": "2026-11-02T14:11:20.060Z"
+  },
+  {
+    "_id": "6ae89a0874c1db851854b898",
+    "name": "Cardamom Cutting Chai",
+    "category": "Beverages",
+    "price": 15,
+    "description": "Strong hot milk tea boiled with crushed green cardamom pods and fresh grated ginger.",
+    "isAvailable": true,
+    "preparationTime": 3,
+    "isVeg": true,
+    "image": "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=600&auto=format&fit=crop&q=80",
+    "rating": 4.8,
+    "ratingCount": 140,
+    "isPopular": true,
+    "tags": [
+      "Essential",
+      "All Day"
+    ],
+    "createdAt": "2026-11-02T14:11:20.060Z",
+    "updatedAt": "2026-11-02T14:11:20.060Z"
+  },
+  {
+    "_id": "6ae89a08861285b5b365066b",
+    "name": "Fresh Mint Lime Cooler",
+    "category": "Beverages",
+    "price": 35,
+    "description": "Sparkling citrus refresher made with freshly squeezed lemons, mint leaves, and a dash of rock salt.",
+    "isAvailable": true,
+    "preparationTime": 4,
+    "isVeg": true,
+    "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600&auto=format&fit=crop&q=80",
+    "rating": 4.7,
+    "ratingCount": 31,
+    "isPopular": false,
+    "tags": [
+      "Refreshing"
+    ],
+    "createdAt": "2026-11-02T14:11:20.060Z",
+    "updatedAt": "2026-11-02T14:11:20.060Z"
+  },
+  {
+    "_id": "6ae89a08fa208cb817b56210",
+    "name": "Warm Gulab Jamun (2 Pcs)",
+    "category": "Dessert",
+    "price": 40,
+    "description": "Melt-in-mouth golden milk dumplings soaked in cardamom and rose infused warm sugar syrup.",
+    "isAvailable": true,
+    "preparationTime": 3,
+    "isVeg": true,
+    "image": "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&auto=format&fit=crop&q=80",
+    "rating": 4.7,
+    "ratingCount": 34,
+    "isPopular": false,
+    "tags": [
+      "Sweet Tooth"
+    ],
+    "createdAt": "2026-11-02T14:11:20.060Z",
+    "updatedAt": "2026-11-02T14:11:20.060Z"
+  },
+  {
+    "_id": "6ae89a08cb8eabbc1f7f3b18",
+    "name": "Paneer Tikka Kathi Roll",
+    "category": "Specials",
+    "price": 95,
+    "description": "Tandoori-spiced char-grilled paneer, sliced peppers, and mint chutney wrapped in a flaky paratha.",
+    "isAvailable": true,
+    "preparationTime": 12,
+    "isVeg": true,
+    "image": "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?w=600&auto=format&fit=crop&q=80",
+    "rating": 4.9,
+    "ratingCount": 56,
+    "isPopular": true,
+    "tags": [
+      "Chef Choice",
+      "Today Special"
+    ],
+    "createdAt": "2026-11-02T14:11:20.060Z",
+    "updatedAt": "2026-11-02T14:11:20.060Z"
+  }
+]
