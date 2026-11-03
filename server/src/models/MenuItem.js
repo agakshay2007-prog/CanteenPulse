@@ -96,7 +96,7 @@ menuItemSchema.pre('save', function (next) {
   if (this.ratingCount && !this.totalReviews) {
     this.totalReviews = this.ratingCount;
   }
-  next();
+  if (typeof next === 'function') next();
 });
 
 // Compound & text indexes for rapid search and category filtering

@@ -55,7 +55,7 @@ foodReviewSchema.pre('save', function (next) {
   if (this.menuItemId && !this.menuItem) {
     this.menuItem = this.menuItemId;
   }
-  next();
+  if (typeof next === 'function') next();
 });
 
 // Post-save hook to automatically recalculate averageRating and totalReviews on MenuItem

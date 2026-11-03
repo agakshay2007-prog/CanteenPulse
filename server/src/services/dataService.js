@@ -91,7 +91,15 @@ async function initializeData() {
       const orderCount = await Order.countDocuments();
       if (orderCount === 0 && Array.isArray(initialOrders) && initialOrders.length > 0) {
         console.log('🌱 Seeding initial demonstration orders into MongoDB Atlas...');
-        await Order.insertMany(initialOrders, { ordered: false });
+        const preparedOrders = initialOrders.map((o) => ({
+          ...o,
+          studentName: o.studentName || o.student?.name || 'Demo Student',
+          rollNumber: o.rollNumber || o.student?.studentId || 'DEMO01',
+          phoneNumber: o.phoneNumber || o.student?.phone || '9876543210',
+          totalAmount: o.totalAmount || o.total || o.subtotal,
+          status: Order.normalizeStatus(o.status)
+        }));
+        await Order.insertMany(preparedOrders, { ordered: false });
       }
 
       console.log('✅ MongoDB Atlas database verification & idempotent check complete.');

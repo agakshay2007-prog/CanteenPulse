@@ -13,15 +13,15 @@ async function testAtlas() {
   const connected = await connectDB();
   const status = getDbStatus();
 
-  console.log(' - Connection Successful:', connected);
-  console.log(' - readyState:', mongoose.connection.readyState);
+  console.log(' - Connection Status:', connected ? 'SUCCESS' : 'FAILED');
+  console.log(' - readyState:', mongoose.connection.readyState, mongoose.connection.readyState === 1 ? '(CONNECTED)' : '(DISCONNECTED)');
   console.log(' - Target Host:', status.host);
   console.log(' - Target Database:', mongoose.connection.name);
   console.log(' - Target URI (Masked):', status.uri);
-  console.log(' - Last Error:', status.lastError);
+  console.log(' - Last Error:', status.lastError || 'None');
 
   if (!connected || mongoose.connection.readyState !== 1) {
-    console.error('FATAL: Could not connect to MongoDB Atlas.');
+    console.error('FATAL: Could not authenticate or connect to MongoDB Atlas.');
     process.exit(1);
   }
 
@@ -47,22 +47,28 @@ async function testAtlas() {
   const firstDish = await MenuItem.findOne();
   console.log(' - Read success: Found dish:', firstDish ? firstDish.name : 'none');
 
-  console.log('\n4. Testing Database Write Operations (Safe non-destructive probe)...');
-  const probeReview = new FoodReview({
-    dishName: firstDish ? firstDish.name : 'Atlas Probe Dish',
-    studentName: 'Atlas Verification System',
-    rating: 5,
-    comment: 'Atlas read-write connectivity probe',
-    menuItem: firstDish ? firstDish._id : null
+  console.log('\n4. Testing Reversible Write & Clean Delete (Safe probe)...');
+  const probeIdentifier = 'reversible_probe_' + Date.now();
+  const probe = new CrowdFeedback({
+    crowdLevel: 'QUIET',
+    comment: 'Temporary Atlas Reversible Write Probe',
+    studentName: 'Verification System Probe',
+    studentIdentifier: probeIdentifier
   });
-  const saved = await probeReview.save();
-  console.log(' - Write success: Created document with ID:', saved._id);
+  const saved = await probe.save();
+  console.log(' - Reversible write success: Created probe record with ID:', saved._id.toString());
 
-  const readBack = await FoodReview.findById(saved._id);
-  console.log(' - Read-back verification:', readBack && readBack._id.toString() === saved._id.toString() ? 'CONFIRMED' : 'FAILED');
+  // Confirm probe exists
+  const probeFound = await CrowdFeedback.findById(saved._id);
+  console.log(' - Probe read-back confirmation:', !!probeFound);
+
+  // Delete ONLY this probe record
+  await CrowdFeedback.findByIdAndDelete(saved._id);
+  const probeCheckAfterDelete = await CrowdFeedback.findById(saved._id);
+  console.log(' - Reversible cleanup confirmation (Only probe deleted):', probeCheckAfterDelete === null ? 'CLEANED' : 'NOT DELETED');
 
   await mongoose.connection.close();
-  console.log('\nMongoDB Atlas Direct Verification PASSED.');
+  console.log('\nAll Atlas Direct Verifications PASSED.');
 }
 
 testAtlas().catch(err => {

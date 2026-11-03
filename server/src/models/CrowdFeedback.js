@@ -67,7 +67,7 @@ crowdFeedbackSchema.pre('save', function (next) {
     else if (this.crowdLevel === 'BUSY') this.estimatedWait = '15+ mins';
     else this.estimatedWait = '5-10 mins';
   }
-  next();
+  if (typeof next === 'function') next();
 });
 
 // Indexes for query performance and rate limiting checks

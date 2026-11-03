@@ -216,7 +216,7 @@ orderSchema.pre('save', function (next) {
     this.status = normalizeStatus(this.status);
   }
 
-  next();
+  if (typeof next === 'function') next();
 });
 
 // Compound indexes
