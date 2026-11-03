@@ -22,6 +22,41 @@ function getMaskedUri(rawUri) {
   }
 }
 
+// Automatically sanitize common user input mistakes in MongoDB Atlas URI
+// E.g., accidental outer angle brackets <password> or unencoded @ in password
+function sanitizeAtlasUri(rawUri) {
+  if (!rawUri || typeof rawUri !== 'string' || !rawUri.startsWith('mongodb')) return rawUri;
+  try {
+    const protoIndex = rawUri.indexOf('://');
+    const proto = rawUri.slice(0, protoIndex + 3);
+    const rest = rawUri.slice(protoIndex + 3);
+
+    const firstColon = rest.indexOf(':');
+    const lastAt = rest.lastIndexOf('@');
+
+    if (firstColon !== -1 && lastAt !== -1 && firstColon < lastAt) {
+      const user = rest.slice(0, firstColon);
+      let pass = rest.slice(firstColon + 1, lastAt);
+      const hostAndParams = rest.slice(lastAt + 1);
+
+      // Strip accidental outer < and >
+      if (pass.startsWith('<') && pass.endsWith('>') && pass.length > 2) {
+        pass = pass.slice(1, -1);
+      }
+
+      // If pass contains unencoded @ or % characters, encode unencoded @ into %40
+      if (pass.includes('@') && !pass.includes('%40')) {
+        pass = pass.replace(/@/g, '%40');
+      }
+
+      return `${proto}${user}:${pass}@${hostAndParams}`;
+    }
+  } catch {
+    return rawUri;
+  }
+  return rawUri;
+}
+
 // Check if URI is still an unconfigured placeholder
 function isPlaceholderUri(uri) {
   if (!uri) return true;
@@ -99,7 +134,8 @@ process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
  * @returns {Promise<boolean>}
  */
 async function connectDB(customUri) {
-  const uri = customUri || process.env.MONGODB_URI || '';
+  const raw = customUri || process.env.MONGODB_URI || '';
+  const uri = sanitizeAtlasUri(raw);
   dbStatus.uri = uri;
   dbStatus.connectionAttempts += 1;
 

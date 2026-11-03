@@ -10,16 +10,16 @@
     "isVeg": true,
     "image": "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&auto=format&fit=crop&q=80",
     "rating": 5,
-    "ratingCount": 10,
+    "ratingCount": 11,
     "isPopular": true,
     "tags": [
       "Bestseller",
       "Campus Favorite"
     ],
     "createdAt": "2026-11-02T14:11:20.060Z",
-    "updatedAt": "2026-11-03T06:37:22.649Z",
+    "updatedAt": "2026-11-03T08:14:13.713Z",
     "averageRating": 5,
-    "totalReviews": 10
+    "totalReviews": 11
   },
   {
     "_id": "6ae89a08ae2ebaa13e42c5d4",
