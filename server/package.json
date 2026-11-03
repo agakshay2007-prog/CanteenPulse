@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "test": "node test/api.test.js"
+    "test": "node test/run_all_tests.js",
+    "test:unit": "node test/api.test.js",
+    "test:atlas": "node test/atlas.integration.test.js"
   },
   "dependencies": {
     "cors": "^2.8.6",

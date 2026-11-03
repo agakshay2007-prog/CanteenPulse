@@ -59,7 +59,7 @@ function createMockReqRes({ body = {}, query = {}, params = {}, headers = {}, me
 
 async function runAllTests() {
   console.log('================================================================');
-  console.log('🧪 CANTEENPULSE BACKEND CIA-2 AUTOMATED VERIFICATION SUITE');
+  console.log('🧪 SUITE 1: UNIT & CONTROLLER LOGIC TESTS (OFFLINE HARNESS)');
   console.log('================================================================\n');
 
   await dataService.initializeData();
@@ -95,7 +95,7 @@ async function runAllTests() {
   {
     const db = getDbStatus();
     const isDbReportValid = db && typeof db.connected === 'boolean' && db.type;
-    record(2, 'Database Health & Connection Status', isDbReportValid, `Type: ${db.type}, Connected: ${db.connected}`);
+    record(2, 'Offline Resilient Fallback Status (Unit Test Isolation)', isDbReportValid, `Harness Mode: ${db.type}, Connected: ${db.connected}`);
   }
 
   // --- SUITE 2: Menu Browsing & Filtering APIs ---
