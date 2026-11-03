@@ -1,5 +1,61 @@
 [
   {
+    "_id": "6ae974a74d2c4f7b6d96cb79",
+    "orderNumber": "CP-107",
+    "student": {
+      "name": "Vikram Malhotra",
+      "studentId": "22BCSE015",
+      "phone": "9876500001"
+    },
+    "items": [
+      {
+        "menuItemId": "6ae89a08ec82e5f8a27b06fe",
+        "name": "Crispy Masala Dosa",
+        "price": 60,
+        "quantity": 2,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 120,
+    "total": 120,
+    "pickupTime": "1:00 PM - 1:15 PM",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "status": "Preparing",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "",
+    "createdAt": "2026-11-03T05:44:07.526Z",
+    "updatedAt": "2026-11-03T05:44:07.543Z"
+  },
+  {
+    "_id": "6ae89c6c4a0c244ae9fe2bef",
+    "orderNumber": "CP-106",
+    "student": {
+      "name": "akshay",
+      "studentId": "334",
+      "phone": "6361651629"
+    },
+    "items": [
+      {
+        "menuItemId": "6ae89a08ae2ebaa13e42c5d4",
+        "name": "Steamed Idli Sambar (2 Pcs)",
+        "price": 45,
+        "quantity": 1,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 45,
+    "total": 45,
+    "pickupTime": "1:00 PM - 1:15 PM (Lunch Slot 1)",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "status": "Pending",
+    "paymentMethod": "UPI / Online",
+    "paymentStatus": "Paid",
+    "notes": "",
+    "createdAt": "2026-11-02T14:21:32.955Z",
+    "updatedAt": "2026-11-02T14:21:32.955Z"
+  },
+  {
     "_id": "6ae89a4f2d9b407d406924de",
     "orderNumber": "CP-105",
     "student": {

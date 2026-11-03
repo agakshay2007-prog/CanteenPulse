@@ -1,5 +1,5 @@
 import React from 'react';
-import { Utensils, ShoppingBag, ShieldCheck, Users, Search } from 'lucide-react';
+import { Search, ShoppingBag, ShieldCheck, User, Sparkles } from 'lucide-react';
 
 export default function Navbar({
   cartCount,
@@ -9,77 +9,81 @@ export default function Navbar({
   onNavigate,
   activeSection,
   isAdmin,
-  onToggleAdmin
+  onToggleAdmin,
+  searchQuery,
+  onSearchChange
 }) {
   const vibe = crowdSummary?.currentLevel || 'Moderate';
   const wait = crowdSummary?.avgWait || '5-10m';
 
-  const vibeColors = {
-    Quiet: 'bg-emerald-100 text-emerald-800 border-emerald-300',
-    Moderate: 'bg-amber-100 text-amber-800 border-amber-300',
-    Busy: 'bg-rose-100 text-rose-800 border-rose-300'
-  };
-
   return (
-    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-forest-100/80 shadow-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-xs">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between gap-4">
         
-        {/* Brand / Logo */}
+        {/* Brand Logo - Matching reference with green circular C badge */}
         <div 
           onClick={() => onNavigate('menu')} 
-          className="flex items-center gap-3 cursor-pointer group"
+          className="flex items-center gap-2.5 cursor-pointer shrink-0"
         >
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-forest-700 to-mint-600 flex items-center justify-center text-white shadow-md shadow-forest-700/20 group-hover:scale-105 transition">
-            <Utensils className="w-5 h-5 text-mint-100" />
+          <div className="w-8 h-8 rounded-full bg-[#10B981] flex items-center justify-center text-white font-black text-sm shadow-sm">
+            C
           </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xl font-extrabold tracking-tight text-forest-900">
-                Canteen<span className="text-mint-600">Pulse</span>
-              </span>
-              <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-forest-100 text-forest-700 tracking-wider">
-                Campus
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-500 hidden sm:block font-medium">Smart Online Canteen Hub</p>
+          <span className="text-xl font-bold tracking-tight text-gray-900">
+            Canteen<span className="text-[#10B981]">Pulse</span>
+          </span>
+        </div>
+
+        {/* Center Pill Search Bar - Exact match to reference screenshot */}
+        <div className="flex-1 max-w-md mx-2 sm:mx-6">
+          <div className="relative">
+            <Search className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+              placeholder="Search for food..."
+              className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100/90 hover:bg-gray-100 text-xs sm:text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#10B981]/30 focus:border-[#10B981] transition border border-transparent shadow-2xs"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => onSearchChange('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-bold text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Live Crowd Pulse Pill */}
-        <button
-          onClick={() => onNavigate('crowd')}
-          className={`hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold cursor-pointer hover:brightness-95 transition ${vibeColors[vibe] || vibeColors.Moderate}`}
-        >
-          <span className="w-2.5 h-2.5 rounded-full bg-current pulse-dot"></span>
-          <span>Crowd: {vibe}</span>
-          <span className="opacity-40">|</span>
-          <span className="font-medium">Wait: ~{wait}</span>
-        </button>
+        {/* Right Nav Actions */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          
+          {/* Live Crowd Pulse Pill */}
+          <button
+            onClick={() => onNavigate('crowd')}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold hover:bg-emerald-100 transition shadow-2xs"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span>
+            <span>Vibe: {vibe} (~{wait})</span>
+          </button>
 
-        {/* Navigation Links */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <nav className="hidden lg:flex items-center gap-1 text-xs sm:text-sm font-semibold text-slate-600 mr-2">
+          {/* Quick Nav Links */}
+          <nav className="hidden lg:flex items-center gap-1 text-xs font-semibold text-gray-600">
             <button 
               onClick={() => onNavigate('menu')}
-              className={`px-3 py-1.5 rounded-xl transition ${activeSection === 'menu' ? 'text-forest-800 bg-forest-50 font-bold' : 'hover:text-forest-700 hover:bg-slate-50'}`}
+              className={`px-3 py-1.5 rounded-full transition ${activeSection === 'menu' ? 'text-[#10B981] font-bold bg-emerald-50' : 'hover:text-gray-900'}`}
             >
               Menu
             </button>
             <button 
-              onClick={() => onNavigate('crowd')}
-              className={`px-3 py-1.5 rounded-xl transition ${activeSection === 'crowd' ? 'text-forest-800 bg-forest-50 font-bold' : 'hover:text-forest-700 hover:bg-slate-50'}`}
-            >
-              Crowd Pulse
-            </button>
-            <button 
               onClick={() => onNavigate('track')}
-              className={`px-3 py-1.5 rounded-xl transition ${activeSection === 'track' ? 'text-forest-800 bg-forest-50 font-bold' : 'hover:text-forest-700 hover:bg-slate-50'}`}
+              className={`px-3 py-1.5 rounded-full transition ${activeSection === 'track' ? 'text-[#10B981] font-bold bg-emerald-50' : 'hover:text-gray-900'}`}
             >
               Track Order
             </button>
             <button 
               onClick={() => onNavigate('reviews')}
-              className={`px-3 py-1.5 rounded-xl transition ${activeSection === 'reviews' ? 'text-forest-800 bg-forest-50 font-bold' : 'hover:text-forest-700 hover:bg-slate-50'}`}
+              className={`px-3 py-1.5 rounded-full transition ${activeSection === 'reviews' ? 'text-[#10B981] font-bold bg-emerald-50' : 'hover:text-gray-900'}`}
             >
               Reviews
             </button>
@@ -88,30 +92,32 @@ export default function Navbar({
           {/* Cart Button */}
           <button
             onClick={onOpenCart}
-            className="p-2 sm:px-3 sm:py-2 rounded-2xl bg-mint-50 text-forest-800 border border-mint-200 hover:bg-mint-100 hover:border-mint-300 transition flex items-center gap-2 shadow-xs"
+            className="p-2 sm:px-3 sm:py-2 rounded-full bg-gray-100 hover:bg-gray-200/80 text-gray-800 transition flex items-center gap-1.5 shadow-2xs"
+            title="Open Cart"
           >
-            <ShoppingBag className="w-5 h-5 text-mint-700" />
-            <span className="hidden sm:inline font-bold text-xs">Cart</span>
-            <span className="w-5 h-5 rounded-full bg-mint-600 text-white text-[11px] font-extrabold flex items-center justify-center">
+            <ShoppingBag className="w-4 h-4 text-gray-700" />
+            <span className="w-5 h-5 rounded-full bg-[#10B981] text-white text-[11px] font-black flex items-center justify-center">
               {cartCount}
             </span>
-            <span className="hidden md:inline font-extrabold text-xs text-forest-900">
+            <span className="hidden sm:inline font-bold text-xs text-gray-900">
               ₹{cartTotal}
             </span>
           </button>
 
-          {/* Admin Switcher */}
+          {/* Admin Switcher / Profile */}
           <button
             onClick={onToggleAdmin}
-            className={`px-3 py-2 rounded-2xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs ${
+            className={`p-2 sm:px-3 sm:py-1.5 rounded-full text-xs font-bold transition flex items-center gap-1.5 shadow-2xs ${
               isAdmin
-                ? 'bg-amber-500 hover:bg-amber-600 text-slate-900'
-                : 'bg-forest-900 hover:bg-forest-800 text-white'
+                ? 'bg-amber-500 hover:bg-amber-600 text-gray-900'
+                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
             }`}
+            title="Canteen Staff Portal"
           >
-            <ShieldCheck className="w-4 h-4 text-mint-300" />
-            <span>{isAdmin ? 'Student View' : 'Admin Staff'}</span>
+            <User className="w-4 h-4 text-gray-600" />
+            <span className="hidden sm:inline">{isAdmin ? 'Student View' : 'Admin'}</span>
           </button>
+
         </div>
 
       </div>

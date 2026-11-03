@@ -92,3 +92,4 @@ export default function OrderSuccessModal({ order, onClose, onTrackOrder }) {
     </div>
   );
 }
+

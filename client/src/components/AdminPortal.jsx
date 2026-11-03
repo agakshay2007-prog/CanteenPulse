@@ -730,3 +730,4 @@ export default function AdminPortal({ onExit, showToast, menuDishes, onRefreshMe
     </main>
   );
 }
+

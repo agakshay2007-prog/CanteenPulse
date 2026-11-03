@@ -10,14 +10,14 @@
     "isVeg": true,
     "image": "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&auto=format&fit=crop&q=80",
     "rating": 5,
-    "ratingCount": 3,
+    "ratingCount": 4,
     "isPopular": true,
     "tags": [
       "Bestseller",
       "Campus Favorite"
     ],
     "createdAt": "2026-11-02T14:11:20.060Z",
-    "updatedAt": "2026-11-02T14:12:31.444Z"
+    "updatedAt": "2026-11-03T05:44:07.553Z"
   },
   {
     "_id": "6ae89a08ae2ebaa13e42c5d4",

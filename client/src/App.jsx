@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import CategoryFilters from './components/CategoryFilters';
 import FoodCard from './components/FoodCard';
 import CartDrawer from './components/CartDrawer';
 import OrderSuccessModal from './components/OrderSuccessModal';
@@ -278,7 +277,7 @@ export default function App() {
   const cartSubtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <div className="min-h-screen flex flex-col font-sans">
+    <div className="min-h-screen flex flex-col font-sans relative campus-bg-doodles">
       
       {/* Top Navbar */}
       <Navbar
@@ -290,9 +289,11 @@ export default function App() {
         activeSection={activeSection}
         isAdmin={isAdminMode}
         onToggleAdmin={() => setIsAdminMode(!isAdminMode)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
 
-      {/* Main Views */}
+      {/* Main Content Area */}
       {isAdminMode ? (
         <AdminPortal
           onExit={() => setIsAdminMode(false)}
@@ -301,52 +302,43 @@ export default function App() {
           onRefreshMenu={loadMenuData}
         />
       ) : (
-        <main className="flex-1 pb-16">
+        <main className="flex-1 pb-24">
           
-          {/* Hero Section */}
+          {/* Hero Section with Greeting, Category Pills & Big Headline */}
           <Hero
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            onReportCrowd={() => setIsCrowdModalOpen(true)}
-            onExploreMenu={() => handleNavigate('menu')}
-            crowdSummary={crowdSummary}
+            activeCategory={activeCategory}
+            onSelectCategory={setActiveCategory}
+            vegOnly={vegOnly}
+            onToggleVeg={setVegOnly}
+            availableOnly={availableOnly}
+            onToggleAvailable={setAvailableOnly}
           />
 
-          {/* Crowd Pulse Section */}
-          <CrowdPulse
-            summary={crowdSummary}
-            onOpenModal={() => setIsCrowdModalOpen(true)}
-          />
-
-          {/* Menu Section */}
-          <section id="menu-section" className="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="mb-4">
-              <span className="text-xs font-black uppercase tracking-wider text-forest-700 bg-forest-50 px-3 py-1 rounded-full border border-forest-100">
-                Fresh From Kitchen
-              </span>
-              <h2 className="text-2xl sm:text-4xl font-black text-forest-900 tracking-tight mt-2">
-                Today's Canteen Menu
+          {/* Menu / Best Sellers Section - Exactly matching reference screenshot */}
+          <section id="menu-section" className="py-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            {/* Section Header with "Best Sellers" and "See All >" */}
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
+                {activeCategory === 'All' ? 'Best Sellers' : `${activeCategory} Specials`}
               </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Prices and availability verified in real-time. Pre-order to beat the queue.
-              </p>
+              <button
+                onClick={() => {
+                  setActiveCategory('All');
+                  setSearchQuery('');
+                }}
+                className="text-xs font-bold text-[#10B981] hover:text-[#059669] transition flex items-center gap-1"
+              >
+                <span>See All</span>
+                <span>&gt;</span>
+              </button>
             </div>
 
-            {/* Category & Dietary Filters */}
-            <CategoryFilters
-              activeCategory={activeCategory}
-              onSelectCategory={setActiveCategory}
-              vegOnly={vegOnly}
-              onToggleVeg={setVegOnly}
-              availableOnly={availableOnly}
-              onToggleAvailable={setAvailableOnly}
-            />
-
-            {/* Food Card Grid */}
+            {/* Food Card Grid - 4 Columns Matching Reference Screenshot */}
             {filteredDishes.length === 0 ? (
-              <div className="py-16 text-center text-slate-400 bg-white rounded-3xl border border-slate-200/80">
-                <p className="font-extrabold text-slate-700 text-sm">No dishes match your filter.</p>
-                <p className="text-xs text-slate-400 mt-1">Try resetting the category filter or search input.</p>
+              <div className="py-16 text-center text-gray-400 bg-white/80 backdrop-blur-sm rounded-3xl border border-gray-100 shadow-xs">
+                <p className="font-extrabold text-gray-700 text-sm">No dishes match your filter.</p>
+                <p className="text-xs text-gray-400 mt-1">Try resetting the category filter or search input.</p>
                 <button
                   onClick={() => {
                     setActiveCategory('All');
@@ -354,13 +346,13 @@ export default function App() {
                     setVegOnly(false);
                     setAvailableOnly(false);
                   }}
-                  className="mt-3.5 px-4 py-2 rounded-xl bg-forest-800 text-white text-xs font-bold transition hover:bg-forest-900"
+                  className="mt-3.5 px-4 py-2 rounded-full bg-[#10B981] text-white text-xs font-bold transition hover:bg-[#059669]"
                 >
                   Reset Filters
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
                 {filteredDishes.map((dish) => (
                   <FoodCard
                     key={dish._id}
@@ -371,6 +363,12 @@ export default function App() {
               </div>
             )}
           </section>
+
+          {/* Crowd Pulse Section */}
+          <CrowdPulse
+            summary={crowdSummary}
+            onOpenModal={() => setIsCrowdModalOpen(true)}
+          />
 
           {/* Live Order Tracking Section */}
           <OrderTracker
@@ -388,6 +386,25 @@ export default function App() {
           />
 
         </main>
+      )}
+
+      {/* Floating Bottom Green Pill CTA Button - Exactly matching reference screenshot "Discover Now" */}
+      {!isAdminMode && (
+        <div className="fixed bottom-6 right-6 z-40">
+          <button
+            onClick={() => {
+              if (cartTotalCount > 0) {
+                setIsCartOpen(true);
+              } else {
+                handleNavigate('menu');
+              }
+            }}
+            className="px-7 py-3.5 rounded-full bg-[#2EB872] hover:bg-[#25A162] text-white font-black text-sm shadow-xl hover:shadow-2xl transition hover:scale-105 active:scale-95 flex items-center gap-2.5 border border-emerald-400/30"
+          >
+            <span>{cartTotalCount > 0 ? `View Cart (${cartTotalCount})` : 'Discover Now'}</span>
+            <span className="text-emerald-100 text-xs font-bold font-mono">→</span>
+          </button>
+        </div>
       )}
 
       {/* Cart Drawer */}
@@ -425,13 +442,13 @@ export default function App() {
       />
 
       {/* Toast Notification Stack */}
-      <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none">
+      <div className="fixed bottom-5 left-5 z-50 flex flex-col gap-2 pointer-events-none">
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`pointer-events-auto px-4 py-3 rounded-2xl shadow-xl text-xs sm:text-sm font-bold flex items-center gap-2 max-w-sm animate-slideLeft ${
+            className={`pointer-events-auto px-4 py-3 rounded-2xl shadow-xl text-xs sm:text-sm font-bold flex items-center gap-2 max-w-sm ${
               toast.type === 'success'
-                ? 'bg-forest-900 text-mint-300 border border-mint-500/30'
+                ? 'bg-gray-900 text-[#10B981] border border-[#10B981]/30'
                 : toast.type === 'error'
                 ? 'bg-rose-600 text-white'
                 : toast.type === 'warning'

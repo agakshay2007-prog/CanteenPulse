@@ -1,110 +1,92 @@
 import React from 'react';
-import { Search, Sparkles, Clock, CheckCircle2, Users } from 'lucide-react';
 
-export default function Hero({ searchQuery, onSearchChange, onReportCrowd, onExploreMenu, crowdSummary }) {
-  const currentVibe = crowdSummary?.currentLevel || 'Moderate';
-  const waitTime = crowdSummary?.avgWait || '5-10 mins';
+const CATEGORIES = [
+  { id: 'All', label: 'All Dishes', icon: '🌿' },
+  { id: 'Breakfast', label: 'Breakfast', icon: '🥪' },
+  { id: 'Lunch', label: 'Lunch Meals', icon: '🍛' },
+  { id: 'Snacks', label: 'Fast Food', icon: '🍔' },
+  { id: 'Beverages', label: 'Drinks & Coffee', icon: '🥤' },
+  { id: 'Dessert', label: 'Desserts', icon: '🍩' },
+  { id: 'Specials', label: 'Specials', icon: '⭐' }
+];
 
+export default function Hero({
+  activeCategory,
+  onSelectCategory,
+  vegOnly,
+  onToggleVeg,
+  availableOnly,
+  onToggleAvailable
+}) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-forest-50/70 via-mint-50/40 to-transparent py-8 sm:py-14 border-b border-forest-100/50">
+    <section className="pt-6 sm:pt-8 pb-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       
-      {/* Decorative Mint Glow */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-mint-200/30 rounded-full blur-3xl pointer-events-none -z-10"></div>
-      <div className="absolute -bottom-10 left-10 w-72 h-72 bg-cream-200/40 rounded-full blur-2xl pointer-events-none -z-10"></div>
+      {/* Small Greeting Header - Exact match to reference screenshot */}
+      <div className="mb-4">
+        <p className="text-xs font-semibold text-gray-500 flex items-center gap-1">
+          <span>Hello</span> <span>👋</span>
+        </p>
+        <h2 className="text-sm font-extrabold text-gray-900 tracking-tight">
+          CanteenPulse
+        </h2>
+      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-          
-          {/* Main Hero Copy */}
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-forest-100/80 border border-forest-200 text-forest-800 text-xs font-bold mb-4 shadow-2xs">
-              <Sparkles className="w-3.5 h-3.5 text-mint-600" />
-              <span>Campus Pre-Ordering & Live Crowd Vibe</span>
-            </div>
+      {/* Horizontal Category Pill Bar - Exact match to reference screenshot */}
+      <div className="flex items-center gap-2.5 overflow-x-auto pb-2 no-scrollbar">
+        {CATEGORIES.map((cat) => {
+          const isActive = activeCategory === cat.id;
+          return (
+            <button
+              key={cat.id}
+              onClick={() => onSelectCategory(cat.id)}
+              className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 transition whitespace-nowrap shadow-2xs ${
+                isActive
+                  ? 'bg-[#10B981] text-white shadow-sm'
+                  : 'bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-gray-100'
+              }`}
+            >
+              <span className="text-sm leading-none">{cat.icon}</span>
+              <span>{cat.label}</span>
+            </button>
+          );
+        })}
+      </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-forest-900 tracking-tight leading-[1.12]">
-              Good Food. <br />
-              <span className="text-mint-600">Less Waiting.</span>
-            </h1>
+      {/* Big Bold Headline - Exact match to reference screenshot */}
+      <div className="mt-8 mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-4xl sm:text-6xl font-black text-gray-950 tracking-tight leading-tight">
+            Food on your Campus
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 font-medium mt-1">
+            Good Food. Less Waiting. Pre-order online and collect at Express Counter #1.
+          </p>
+        </div>
 
-            <p className="mt-3.5 text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
-              Order meals online directly from your phone. Pick a convenient collection slot, check live crowd vibes, and walk straight to Express Counter #1 without queueing.
-            </p>
-
-            {/* Hero Search Bar */}
-            <div className="mt-6 relative max-w-lg">
-              <Search className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-                placeholder="Search food by name (e.g. Masala Dosa, Biryani, Chai)..."
-                className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white border border-forest-200/90 text-sm text-slate-800 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-mint-500/30 focus:border-mint-600 transition"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => onSearchChange('')}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400 hover:text-slate-600 px-1.5 py-0.5 rounded bg-slate-100"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-
-            {/* Quick Badges */}
-            <div className="mt-5 flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600">
-              <div className="flex items-center gap-1.5 text-forest-700">
-                <CheckCircle2 className="w-4 h-4 text-mint-600" />
-                <span>Express Pickup Counter #1</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-forest-700">
-                <Clock className="w-4 h-4 text-mint-600" />
-                <span>Hot & Freshly Cooked</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-forest-700">
-                <Users className="w-4 h-4 text-mint-600" />
-                <span>Community Crowd Pulse</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Crowd Status Card */}
-          <div className="lg:w-80 bg-white/95 backdrop-blur-md rounded-3xl border border-forest-100 p-6 shadow-sm flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Canteen Pulse</span>
-                <span className="w-2.5 h-2.5 rounded-full bg-mint-500 pulse-dot"></span>
-              </div>
-
-              <div className="my-4">
-                <p className="text-xs font-medium text-slate-500">Current Queue Vibe</p>
-                <h3 className="text-2xl font-black text-forest-900 mt-0.5">{currentVibe}</h3>
-                <p className="text-xs text-mint-700 font-semibold mt-1">Est. wait: ~{waitTime}</p>
-              </div>
-
-              <p className="text-[11px] text-slate-400 leading-normal bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                Based on voluntary campus reports. Skip the peak rush by reserving your collection slot.
-              </p>
-            </div>
-
-            <div className="mt-5 pt-3 border-t border-slate-100 flex gap-2">
-              <button
-                onClick={onExploreMenu}
-                className="flex-1 py-2.5 rounded-xl bg-forest-800 hover:bg-forest-900 text-white text-xs font-bold transition shadow-xs"
-              >
-                Order Now
-              </button>
-              <button
-                onClick={onReportCrowd}
-                className="px-3.5 py-2.5 rounded-xl bg-mint-50 hover:bg-mint-100 text-forest-800 border border-mint-200 text-xs font-bold transition"
-              >
-                Report Vibe
-              </button>
-            </div>
-          </div>
-
+        {/* Dietary toggles */}
+        <div className="flex items-center gap-3 text-xs font-semibold text-gray-600 bg-white/70 backdrop-blur-sm px-3.5 py-1.5 rounded-full border border-gray-200/60 shadow-2xs self-start sm:self-auto">
+          <label className="flex items-center gap-1.5 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={vegOnly}
+              onChange={(e) => onToggleVeg(e.target.checked)}
+              className="w-3.5 h-3.5 rounded accent-[#10B981]"
+            />
+            <span>Veg Only 🟢</span>
+          </label>
+          <span className="text-gray-300">|</span>
+          <label className="flex items-center gap-1.5 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={availableOnly}
+              onChange={(e) => onToggleAvailable(e.target.checked)}
+              className="w-3.5 h-3.5 rounded accent-[#10B981]"
+            />
+            <span>In Stock Only</span>
+          </label>
         </div>
       </div>
+
     </section>
   );
 }

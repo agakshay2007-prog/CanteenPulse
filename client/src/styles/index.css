@@ -1,65 +1,28 @@
-/* CanteenPulse Global Theme Styles */
+/* CanteenPulse - CampusBites Inspired UI Styles */
 
 @layer base {
   body {
-    background: radial-gradient(circle at 15% 15%, #F5FAF6 0%, #FAF9F5 100%);
-    color: #1E293B;
+    background: linear-gradient(115deg, #A3EBC4 0%, #C8F4DC 22%, #EEFBF4 45%, #FCFAF4 70%, #FBF6EB 100%);
+    background-attachment: fixed;
+    color: #111827;
+    min-height: 100vh;
   }
 }
 
-/* Veg / Non-Veg Badges */
-.veg-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 15px;
-  height: 15px;
-  border: 1.5px solid #16A34A;
-  border-radius: 3px;
-  background: white;
-}
-.veg-icon::after {
-  content: '';
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: #16A34A;
+/* Background doodle patterns overlay */
+.campus-bg-doodles {
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 90% 30%, rgba(245, 158, 11, 0.05) 0%, transparent 40%);
 }
 
-.non-veg-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 15px;
-  height: 15px;
-  border: 1.5px solid #DC2626;
-  border-radius: 3px;
-  background: white;
-}
-.non-veg-icon::after {
-  content: '';
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: #DC2626;
-}
-
-/* Card Hover Elevation */
-.food-card-hover {
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.food-card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 30px -10px rgba(22, 101, 52, 0.12);
-}
-
-/* Custom Scrollbar */
+/* Custom scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #F1F5F2;
+  background: rgba(255, 255, 255, 0.5);
 }
 ::-webkit-scrollbar-thumb {
   background: #CBD5E1;
@@ -69,11 +32,29 @@
   background: #94A3B8;
 }
 
+/* Card hover animation */
+.campus-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.campus-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px -8px rgba(16, 185, 129, 0.16);
+}
+
 /* Pulse animation */
 @keyframes pulseSubtle {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.15); }
+  50% { opacity: 0.5; transform: scale(1.15); }
 }
 .pulse-dot {
   animation: pulseSubtle 2s infinite ease-in-out;
+}
+
+/* Hide scrollbar for category list */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

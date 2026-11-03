@@ -121,3 +121,4 @@ export const deleteMenuItem = (token, id) =>
     method: 'DELETE',
     headers: { 'x-admin-token': token }
   });
+

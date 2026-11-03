@@ -95,3 +95,4 @@ export default function ReviewsSection({ reviews, onOpenModal }) {
     </section>
   );
 }
+
