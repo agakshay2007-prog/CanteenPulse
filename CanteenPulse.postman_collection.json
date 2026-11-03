@@ -1,0 +1,352 @@
+{
+  "info": {
+    "_postman_id": "canteenpulse-api-v2-collection",
+    "name": "CanteenPulse REST API Collection (CIA-2)",
+    "description": "Complete Postman collection for CanteenPulse College Canteen Online Food Ordering & Crowd Pulse Web Application.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "admin123",
+      "type": "string"
+    },
+    {
+      "key": "sampleOrderNumber",
+      "value": "CP-101",
+      "type": "string"
+    },
+    {
+      "key": "sampleDishId",
+      "value": "65b8c9d0e1f2a3b4c5d6e7f8",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "System Health",
+      "item": [
+        {
+          "name": "GET System Health & DB State",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Checks server uptime, memory usage, and MongoDB database connectivity status."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Menu Management",
+      "item": [
+        {
+          "name": "GET All Menu Items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu"]
+            },
+            "description": "Retrieves all food items on the canteen menu."
+          }
+        },
+        {
+          "name": "GET Filter Menu by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu?category=Lunch",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu"],
+              "query": [
+                { "key": "category", "value": "Lunch" }
+              ]
+            },
+            "description": "Filters dishes by category (Breakfast, Lunch, Snacks, Beverages, Dessert, Specials)."
+          }
+        },
+        {
+          "name": "GET Search Menu by Name",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu?search=Dosa",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu"],
+              "query": [
+                { "key": "search", "value": "Dosa" }
+              ]
+            },
+            "description": "Performs text search across dish names, descriptions, and culinary tags."
+          }
+        },
+        {
+          "name": "GET Single Menu Item by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/menu/{{sampleDishId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["menu", "{{sampleDishId}}"]
+            },
+            "description": "Fetches a specific food item's complete profile and ingredients."
+          }
+        },
+        {
+          "name": "POST Add New Dish (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-admin-token", "value": "{{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Paneer Butter Masala Combo\",\n  \"category\": \"Lunch\",\n  \"price\": 110,\n  \"description\": \"Fresh cottage cheese cubes in rich tomato gravy served with 2 buttery rotis.\",\n  \"preparationTime\": 15,\n  \"isVeg\": true,\n  \"image\": \"https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=500&auto=format&fit=crop&q=60\",\n  \"isPopular\": true,\n  \"tags\": [\"North Indian\", \"Chef Special\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/menu",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "menu"]
+            },
+            "description": "Admin creates a new dish in the canteen catalog."
+          }
+        },
+        {
+          "name": "PATCH Toggle Dish Availability (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "x-admin-token", "value": "{{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/menu/{{sampleDishId}}/toggle-availability",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "menu", "{{sampleDishId}}", "toggle-availability"]
+            },
+            "description": "Instantly toggles a dish between In Stock and Out of Stock."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders & Fulfillment",
+      "item": [
+        {
+          "name": "POST Create Food Order (Server Price Enforced)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentName\": \"Siddharth Rao\",\n  \"rollNumber\": \"22BCSE042\",\n  \"phoneNumber\": \"9876543210\",\n  \"pickupTime\": \"1:00 PM - 1:15 PM\",\n  \"pickupCounter\": \"Counter #1 (Express Pickup)\",\n  \"specialInstructions\": \"Extra spicy chutney please\",\n  \"paymentMethod\": \"Pay at Counter\",\n  \"items\": [\n    {\n      \"menuItemId\": \"{{sampleDishId}}\",\n      \"name\": \"Crispy Masala Dosa\",\n      \"quantity\": 2\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders"]
+            },
+            "description": "Places an order. Server fetches DB prices to compute subtotal and totalAmount securely."
+          }
+        },
+        {
+          "name": "GET Track Order by Order Number",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{sampleOrderNumber}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{sampleOrderNumber}}"]
+            },
+            "description": "Tracks order live preparation and pickup readiness status."
+          }
+        },
+        {
+          "name": "GET Track Order with Privacy Verification",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/orders/{{sampleOrderNumber}}?verifyPhone=9876543210",
+              "host": ["{{baseUrl}}"],
+              "path": ["orders", "{{sampleOrderNumber}}"],
+              "query": [
+                { "key": "verifyPhone", "value": "9876543210" }
+              ]
+            },
+            "description": "Verifies student phone number before revealing detailed order data."
+          }
+        },
+        {
+          "name": "GET Admin All Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "x-admin-token", "value": "{{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/orders?status=PENDING",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "orders"],
+              "query": [
+                { "key": "status", "value": "PENDING" }
+              ]
+            },
+            "description": "Admin kitchen display feed showing incoming orders."
+          }
+        },
+        {
+          "name": "PATCH Update Order Status (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-admin-token", "value": "{{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CONFIRMED\",\n  \"paymentStatus\": \"Pending\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/orders/{{sampleOrderNumber}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "orders", "{{sampleOrderNumber}}", "status"]
+            },
+            "description": "Enforces state machine progression: PENDING -> CONFIRMED -> PREPARING -> READY -> COMPLETED."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crowd Pulse",
+      "item": [
+        {
+          "name": "GET Crowd Pulse Summary & Trends",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/crowd",
+              "host": ["{{baseUrl}}"],
+              "path": ["crowd"]
+            },
+            "description": "Retrieves voluntary crowd indicators, typical schedule trends, and occupancy disclaimer."
+          }
+        },
+        {
+          "name": "POST Submit Voluntary Crowd Feedback",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"crowdLevel\": \"MODERATE\",\n  \"comment\": \"Queue is about 5 students, moving quickly.\",\n  \"estimatedWait\": \"5-10 mins\",\n  \"studentName\": \"Ananya Sen\",\n  \"studentIdentifier\": \"ananya_cs22\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/crowd",
+              "host": ["{{baseUrl}}"],
+              "path": ["crowd"]
+            },
+            "description": "Submits voluntary crowd check-in with 3-minute duplicate protection."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Food Reviews",
+      "item": [
+        {
+          "name": "GET All Food Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reviews",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews"]
+            },
+            "description": "Retrieves verified student dish ratings and feedback."
+          }
+        },
+        {
+          "name": "POST Submit Food Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"menuItemId\": \"{{sampleDishId}}\",\n  \"dishName\": \"Crispy Masala Dosa\",\n  \"studentName\": \"Karan Mehra\",\n  \"rating\": 5,\n  \"comment\": \"Perfect golden brown crispness and fresh coconut chutney!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reviews",
+              "host": ["{{baseUrl}}"],
+              "path": ["reviews"]
+            },
+            "description": "Publishes review and triggers dynamic recalculation of MenuItem average rating."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Authentication & Dashboard",
+      "item": [
+        {
+          "name": "POST Admin Login (Signed HMAC Token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passcode\": \"admin123\",\n  \"username\": \"canteen_manager\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "login"]
+            },
+            "description": "Authenticates admin via timing-safe check and generates tamper-proof 24h HMAC-SHA256 bearer token."
+          }
+        },
+        {
+          "name": "GET Admin Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "x-admin-token", "value": "{{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "stats"]
+            },
+            "description": "Returns high-level business intelligence: total orders, revenue, active queue, and DB mode."
+          }
+        }
+      ]
+    }
+  ]
+}

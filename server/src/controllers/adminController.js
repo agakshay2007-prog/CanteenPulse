@@ -1,23 +1,40 @@
 const dataService = require('../services/dataService');
+const { verifyPasscode, generateAdminToken } = require('../middleware/auth');
 
-// @desc    Admin login & verify credentials
+// @desc    Admin login & verify credentials with secure timing-safe check and signed HMAC token
 // @route   POST /api/admin/login
 exports.login = (req, res) => {
-  const { passcode } = req.body;
-  const configuredPasscode = process.env.ADMIN_PASSCODE || 'admin123';
-  const customSecret = process.env.ADMIN_SECRET || 'canteenpulse_secret_key_2026';
+  const { passcode, username } = req.body;
 
-  if (passcode === configuredPasscode || passcode === customSecret) {
+  if (!passcode) {
+    return res.status(400).json({
+      success: false,
+      message: 'Passcode is required for administrative login'
+    });
+  }
+
+  // Timing-safe password verification
+  const isValid = verifyPasscode(passcode);
+
+  if (isValid) {
+    const adminUser = username || 'canteen_manager';
+    const signedToken = generateAdminToken(adminUser);
+
     return res.json({
       success: true,
       message: 'Admin authorization successful',
-      token: configuredPasscode
+      token: signedToken,
+      expiresIn: '24h',
+      user: {
+        username: adminUser,
+        role: 'ADMIN'
+      }
     });
   }
 
   res.status(401).json({
     success: false,
-    message: 'Invalid administrative passcode. Default demo passcode is admin123'
+    message: 'Invalid administrative passcode. Please check your credentials.'
   });
 };
 
@@ -35,12 +52,18 @@ exports.getStats = async (req, res, next) => {
   }
 };
 
-// @desc    Get all orders for admin review
+// @desc    Get all orders for admin review with filtering and search
 // @route   GET /api/admin/orders
 exports.getOrders = async (req, res, next) => {
   try {
-    const { status, studentId, search } = req.query;
-    const orders = await dataService.getAllOrders({ status, studentId, search });
+    const { status, studentId, rollNumber, search } = req.query;
+    const orders = await dataService.getAllOrders({
+      status,
+      studentId,
+      rollNumber,
+      search
+    });
+
     res.json({
       success: true,
       count: orders.length,
@@ -51,7 +74,7 @@ exports.getOrders = async (req, res, next) => {
   }
 };
 
-// @desc    Update order kitchen status
+// @desc    Update order kitchen status with state machine transition enforcement
 // @route   PATCH /api/admin/orders/:orderNumber/status
 exports.updateOrderStatus = async (req, res, next) => {
   try {
@@ -59,21 +82,30 @@ exports.updateOrderStatus = async (req, res, next) => {
     const { status, paymentStatus } = req.body;
 
     if (!status) {
-      return res.status(400).json({ success: false, message: 'Status is required' });
+      return res.status(400).json({
+        success: false,
+        message: 'Status is required'
+      });
     }
 
     const updated = await dataService.updateOrderStatus(orderNumber, status, paymentStatus);
     if (!updated) {
-      return res.status(404).json({ success: false, message: 'Order not found' });
+      return res.status(404).json({
+        success: false,
+        message: `Order #${orderNumber} not found`
+      });
     }
 
     res.json({
       success: true,
-      message: `Order ${updated.orderNumber} updated to '${status}'`,
+      message: `Order ${updated.orderNumber} successfully updated to '${updated.status}'`,
       data: updated
     });
   } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    res.status(400).json({
+      success: false,
+      message: err.message
+    });
   }
 };
 
@@ -81,10 +113,23 @@ exports.updateOrderStatus = async (req, res, next) => {
 // @route   POST /api/admin/menu
 exports.addMenuItem = async (req, res, next) => {
   try {
-    const { name, category, price, description, preparationTime, isVeg, image, isPopular, tags } = req.body;
+    const {
+      name,
+      category,
+      price,
+      description,
+      preparationTime,
+      isVeg,
+      image,
+      isPopular,
+      tags
+    } = req.body;
 
     if (!name || price === undefined) {
-      return res.status(400).json({ success: false, message: 'Dish name and price are required' });
+      return res.status(400).json({
+        success: false,
+        message: 'Dish name and price are required'
+      });
     }
 
     const item = await dataService.createMenuItem({
@@ -115,7 +160,10 @@ exports.updateMenuItem = async (req, res, next) => {
   try {
     const updated = await dataService.updateMenuItem(req.params.id, req.body);
     if (!updated) {
-      return res.status(404).json({ success: false, message: 'Dish not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Dish not found'
+      });
     }
     res.json({
       success: true,
@@ -133,7 +181,10 @@ exports.toggleAvailability = async (req, res, next) => {
   try {
     const dish = await dataService.getMenuItemById(req.params.id);
     if (!dish) {
-      return res.status(404).json({ success: false, message: 'Dish not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Dish not found'
+      });
     }
 
     const updated = await dataService.updateMenuItem(req.params.id, {
@@ -156,7 +207,10 @@ exports.deleteMenuItem = async (req, res, next) => {
   try {
     const deleted = await dataService.deleteMenuItem(req.params.id);
     if (!deleted) {
-      return res.status(404).json({ success: false, message: 'Dish not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Dish not found'
+      });
     }
     res.json({
       success: true,
@@ -167,4 +221,3 @@ exports.deleteMenuItem = async (req, res, next) => {
     next(err);
   }
 };
-

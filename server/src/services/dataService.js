@@ -148,8 +148,13 @@ async function getAllMenuItems({ category, search, availableOnly } = {}) {
 }
 
 async function getMenuItemById(id) {
+  if (!id) return null;
   if (dbStatus.isMongo) {
-    return await MenuItem.findById(id);
+    try {
+      return await MenuItem.findById(id);
+    } catch (e) {
+      return null;
+    }
   } else {
     const items = await readJsonFile(MENU_FILE, []);
     return items.find((i) => i._id.toString() === id.toString()) || null;
@@ -157,27 +162,33 @@ async function getMenuItemById(id) {
 }
 
 async function createMenuItem(itemData) {
+  const payload = {
+    name: itemData.name.trim(),
+    category: itemData.category || 'Lunch',
+    price: Number(itemData.price),
+    description: itemData.description ? itemData.description.trim() : '',
+    isAvailable: itemData.isAvailable !== undefined ? Boolean(itemData.isAvailable) : true,
+    preparationTime: Number(itemData.preparationTime) || 10,
+    isVeg: itemData.isVeg !== undefined ? Boolean(itemData.isVeg) : true,
+    image:
+      itemData.image ||
+      'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60',
+    averageRating: 4.5,
+    totalReviews: 1,
+    rating: 4.5,
+    ratingCount: 1,
+    isPopular: !!itemData.isPopular,
+    tags: itemData.tags || []
+  };
+
   if (dbStatus.isMongo) {
-    const item = new MenuItem(itemData);
+    const item = new MenuItem(payload);
     return await item.save();
   } else {
     const items = await readJsonFile(MENU_FILE, []);
     const newItem = {
       _id: generateId(),
-      name: itemData.name,
-      category: itemData.category || 'Lunch',
-      price: Number(itemData.price),
-      description: itemData.description || '',
-      isAvailable: itemData.isAvailable !== undefined ? itemData.isAvailable : true,
-      preparationTime: Number(itemData.preparationTime) || 10,
-      isVeg: itemData.isVeg !== undefined ? itemData.isVeg : true,
-      image:
-        itemData.image ||
-        'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60',
-      rating: 4.5,
-      ratingCount: 1,
-      isPopular: !!itemData.isPopular,
-      tags: itemData.tags || [],
+      ...payload,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -218,42 +229,49 @@ async function deleteMenuItem(id) {
 }
 
 // ================= ORDER SERVICES =================
-async function getAllOrders({ status, studentId, search } = {}) {
+async function getAllOrders({ status, studentId, rollNumber, search } = {}) {
+  const targetRoll = rollNumber || studentId;
+  const normalizedStatus = status && status !== 'All' ? Order.normalizeStatus(status) : null;
+
   if (dbStatus.isMongo) {
     const query = {};
-    if (status && status !== 'All') {
-      query.status = status;
+    if (normalizedStatus) {
+      query.status = normalizedStatus;
     }
-    if (studentId) {
-      query['student.studentId'] = studentId;
+    if (targetRoll) {
+      query.$or = [{ rollNumber: targetRoll.toUpperCase() }, { 'student.studentId': targetRoll }];
     }
     if (search && search.trim()) {
+      const s = search.trim();
       query.$or = [
-        { orderNumber: { $regex: search.trim(), $options: 'i' } },
-        { 'student.name': { $regex: search.trim(), $options: 'i' } },
-        { 'student.studentId': { $regex: search.trim(), $options: 'i' } },
-        { 'student.phone': { $regex: search.trim(), $options: 'i' } }
+        { orderNumber: { $regex: s, $options: 'i' } },
+        { studentName: { $regex: s, $options: 'i' } },
+        { rollNumber: { $regex: s, $options: 'i' } },
+        { phoneNumber: { $regex: s, $options: 'i' } },
+        { 'student.name': { $regex: s, $options: 'i' } },
+        { 'student.studentId': { $regex: s, $options: 'i' } }
       ];
     }
     return await Order.find(query).sort({ createdAt: -1 });
   } else {
     let orders = await readJsonFile(ORDERS_FILE, []);
-    if (status && status !== 'All') {
-      orders = orders.filter((o) => o.status === status);
+    if (normalizedStatus) {
+      orders = orders.filter((o) => Order.normalizeStatus(o.status) === normalizedStatus);
     }
-    if (studentId) {
-      orders = orders.filter(
-        (o) => (o.student?.studentId || o.studentId)?.toLowerCase() === studentId.toLowerCase()
-      );
+    if (targetRoll) {
+      orders = orders.filter((o) => {
+        const roll = o.rollNumber || o.student?.studentId || '';
+        return roll.toUpperCase() === targetRoll.toUpperCase();
+      });
     }
     if (search && search.trim()) {
       const s = search.trim().toLowerCase();
       orders = orders.filter(
         (o) =>
           o.orderNumber.toLowerCase().includes(s) ||
-          (o.student?.name || o.studentName || '').toLowerCase().includes(s) ||
-          (o.student?.studentId || o.studentId || '').toLowerCase().includes(s) ||
-          (o.student?.phone || o.phone || '').includes(s)
+          (o.studentName || o.student?.name || '').toLowerCase().includes(s) ||
+          (o.rollNumber || o.student?.studentId || '').toLowerCase().includes(s) ||
+          (o.phoneNumber || o.student?.phone || '').includes(s)
       );
     }
     return orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -261,6 +279,7 @@ async function getAllOrders({ status, studentId, search } = {}) {
 }
 
 async function getOrderByNumber(orderNumber) {
+  if (!orderNumber) return null;
   const normalized = orderNumber.trim().toUpperCase();
   if (dbStatus.isMongo) {
     return await Order.findOne({ orderNumber: normalized });
@@ -270,41 +289,64 @@ async function getOrderByNumber(orderNumber) {
   }
 }
 
-// Strict Server-Side Order Price Calculation
+// Strict Server-Side Order Price Calculation & Validation
 async function createOrderWithServerValidation({
   student,
+  studentName,
+  rollNumber,
+  phoneNumber,
   items,
   pickupTime,
   pickupCounter,
+  specialInstructions,
   paymentMethod,
   notes
 }) {
+  // Extract student details with support for both flat and nested payload
+  const sName = (studentName || (student && student.name) || '').trim();
+  const sRoll = (rollNumber || (student && student.studentId) || '').trim().toUpperCase();
+  const sPhone = (phoneNumber || (student && student.phone) || '').trim();
+
+  if (!sName) {
+    throw new Error('Student name is required');
+  }
+  if (!sRoll) {
+    throw new Error('Student Roll Number / College ID is required');
+  }
+  if (!sPhone || !/^\+?[0-9\s-]{10,15}$/.test(sPhone)) {
+    throw new Error('Valid phone number (at least 10 digits) is required');
+  }
+
+  if (!pickupTime || !pickupTime.trim()) {
+    throw new Error('Please select an available pickup time slot');
+  }
+
   if (!items || !Array.isArray(items) || items.length === 0) {
     throw new Error('Order must contain at least one item');
   }
 
   // Fetch all menu items from database to compute authorized prices
-  let verifiedItems = [];
+  const verifiedItems = [];
   let calculatedSubtotal = 0;
 
   for (const requestedItem of items) {
     const qty = parseInt(requestedItem.quantity, 10);
     if (isNaN(qty) || qty <= 0) {
-      throw new Error(`Invalid quantity for item: ${requestedItem.name || 'unnamed'}`);
+      throw new Error(`Invalid quantity (${requestedItem.quantity}) for item: ${requestedItem.name || 'unnamed'}`);
     }
 
-    const menuItemId = requestedItem.menuItemId || requestedItem._id;
+    const menuItemId = requestedItem.menuItemId || requestedItem.id || requestedItem._id;
     const dbDish = await getMenuItemById(menuItemId);
 
     if (!dbDish) {
-      throw new Error(`Dish not found in canteen menu: ${requestedItem.name}`);
+      throw new Error(`Dish not found in canteen menu: ${requestedItem.name || menuItemId}`);
     }
 
     if (dbDish.isAvailable === false) {
       throw new Error(`Dish "${dbDish.name}" is currently sold out and cannot be ordered.`);
     }
 
-    // SERVER-SIDE AUTHORIZED PRICE FROM DATABASE
+    // SERVER-SIDE AUTHORIZED PRICE ENFORCED FROM DATABASE
     const unitPrice = Number(dbDish.price);
     const itemTotal = unitPrice * qty;
     calculatedSubtotal += itemTotal;
@@ -330,22 +372,25 @@ async function createOrderWithServerValidation({
 
   const payload = {
     orderNumber,
+    studentName: sName,
+    rollNumber: sRoll,
+    phoneNumber: sPhone,
     student: {
-      name: student.name.trim(),
-      studentId: student.studentId.trim(),
-      phone: student.phone.trim()
+      name: sName,
+      studentId: sRoll,
+      phone: sPhone
     },
     items: verifiedItems,
     subtotal: calculatedSubtotal,
-    total: calculatedSubtotal, // packaging is free for students!
-    pickupTime: pickupTime || 'Immediate (~15 mins)',
+    totalAmount: calculatedSubtotal,
+    total: calculatedSubtotal,
+    pickupTime: pickupTime.trim(),
     pickupCounter: pickupCounter || 'Counter #1 (Express Pickup)',
-    status: 'Pending',
+    specialInstructions: specialInstructions || notes || '',
+    status: 'PENDING',
     paymentMethod: paymentMethod || 'Pay at Counter',
     paymentStatus: paymentMethod === 'UPI / Online' ? 'Paid' : 'Pending',
-    notes: notes || '',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    notes: notes || ''
   };
 
   if (dbStatus.isMongo) {
@@ -355,7 +400,9 @@ async function createOrderWithServerValidation({
     const orders = await readJsonFile(ORDERS_FILE, []);
     const newOrder = {
       _id: generateId(),
-      ...payload
+      ...payload,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
     orders.unshift(newOrder);
     await writeJsonFile(ORDERS_FILE, orders);
@@ -363,23 +410,43 @@ async function createOrderWithServerValidation({
   }
 }
 
-async function updateOrderStatus(orderNumber, status, paymentStatus) {
-  const allowed = ['Pending', 'Confirmed', 'Preparing', 'Ready for Pickup', 'Completed', 'Cancelled'];
-  if (!allowed.includes(status)) {
-    throw new Error(`Invalid status: ${status}. Must be one of: ${allowed.join(', ')}`);
+// State Machine Status Transition Validation
+async function updateOrderStatus(orderNumber, newStatusInput, paymentStatus) {
+  const order = await getOrderByNumber(orderNumber);
+  if (!order) {
+    return null;
   }
 
-  const normalized = orderNumber.trim().toUpperCase();
+  const currentStatus = Order.normalizeStatus(order.status);
+  const targetStatus = Order.normalizeStatus(newStatusInput);
+
+  if (!Order.ORDER_STATUSES.includes(targetStatus)) {
+    throw new Error(`Invalid status: ${newStatusInput}. Must be one of: ${Order.ORDER_STATUSES.join(', ')}`);
+  }
+
+  // Check state machine transition rules
+  const allowedNext = Order.ALLOWED_TRANSITIONS[currentStatus] || [];
+  if (currentStatus !== targetStatus && !allowedNext.includes(targetStatus)) {
+    throw new Error(
+      `Invalid status transition: Order is currently '${currentStatus}' and cannot transition directly to '${targetStatus}'. Allowed next states: [${allowedNext.join(', ')}]`
+    );
+  }
+
+  const normalizedOrderNumber = orderNumber.trim().toUpperCase();
 
   if (dbStatus.isMongo) {
-    const update = { status };
+    const update = { status: targetStatus };
     if (paymentStatus) update.paymentStatus = paymentStatus;
-    return await Order.findOneAndUpdate({ orderNumber: normalized }, update, { new: true });
+    return await Order.findOneAndUpdate(
+      { orderNumber: normalizedOrderNumber },
+      update,
+      { new: true, runValidators: true }
+    );
   } else {
     const orders = await readJsonFile(ORDERS_FILE, []);
-    const idx = orders.findIndex((o) => o.orderNumber.toUpperCase() === normalized);
+    const idx = orders.findIndex((o) => o.orderNumber.toUpperCase() === normalizedOrderNumber);
     if (idx === -1) return null;
-    orders[idx].status = status;
+    orders[idx].status = targetStatus;
     if (paymentStatus) orders[idx].paymentStatus = paymentStatus;
     orders[idx].updatedAt = new Date().toISOString();
     await writeJsonFile(ORDERS_FILE, orders);
@@ -400,10 +467,7 @@ async function getCrowdFeedback(limit = 30) {
 }
 
 async function submitCrowdFeedback({ crowdLevel, comment, estimatedWait, studentName, studentIdentifier }) {
-  const allowed = ['Quiet', 'Moderate', 'Busy'];
-  if (!allowed.includes(crowdLevel)) {
-    throw new Error('Crowd level must be Quiet, Moderate, or Busy');
-  }
+  const normLevel = CrowdFeedback.normalizeCrowdLevel(crowdLevel);
 
   // Rate-limiting / Duplicate Protection (within 3 minutes)
   const identifier = studentIdentifier || studentName || 'anonymous';
@@ -418,10 +482,14 @@ async function submitCrowdFeedback({ crowdLevel, comment, estimatedWait, student
       throw new Error('Please wait 3 minutes before submitting another crowd feedback report.');
     }
 
+    const waitEst =
+      estimatedWait ||
+      (normLevel === 'QUIET' ? '< 5 mins' : normLevel === 'BUSY' ? '15+ mins' : '5-10 mins');
+
     const feedback = new CrowdFeedback({
-      crowdLevel,
+      crowdLevel: normLevel,
       comment: comment || '',
-      estimatedWait: estimatedWait || (crowdLevel === 'Quiet' ? '< 5 mins' : crowdLevel === 'Busy' ? '15+ mins' : '5-10 mins'),
+      estimatedWait: waitEst,
       studentName: studentName || 'Anonymous Student',
       studentIdentifier: identifier
     });
@@ -437,11 +505,15 @@ async function submitCrowdFeedback({ crowdLevel, comment, estimatedWait, student
       throw new Error('Please wait 3 minutes before submitting another crowd feedback report.');
     }
 
+    const waitEst =
+      estimatedWait ||
+      (normLevel === 'QUIET' ? '< 5 mins' : normLevel === 'BUSY' ? '15+ mins' : '5-10 mins');
+
     const newFeedback = {
       _id: generateId(),
-      crowdLevel,
+      crowdLevel: normLevel,
       comment: comment || '',
-      estimatedWait: estimatedWait || (crowdLevel === 'Quiet' ? '< 5 mins' : crowdLevel === 'Busy' ? '15+ mins' : '5-10 mins'),
+      estimatedWait: waitEst,
       studentName: studentName || 'Anonymous Student',
       studentIdentifier: identifier,
       createdAt: new Date().toISOString(),
@@ -457,37 +529,38 @@ async function getCrowdSummary() {
   const reports = await getCrowdFeedback(30);
 
   const baseSchedule = [
-    { time: '09:00 AM', label: 'Breakfast Open', crowdLevel: 'Quiet', score: 25 },
-    { time: '10:30 AM', label: 'Morning Tea Break', crowdLevel: 'Moderate', score: 60 },
-    { time: '12:00 PM', label: 'Lunch Starts', crowdLevel: 'Moderate', score: 65 },
-    { time: '01:00 PM', label: 'Peak Lunch Rush', crowdLevel: 'Busy', score: 90 },
-    { time: '02:00 PM', label: 'Late Lunch', crowdLevel: 'Moderate', score: 50 },
-    { time: '03:30 PM', label: 'Snacks Break', crowdLevel: 'Busy', score: 75 },
-    { time: '05:00 PM', label: 'Closing Soon', crowdLevel: 'Quiet', score: 20 }
+    { time: '09:00 AM', label: 'Breakfast Open', crowdLevel: 'QUIET', score: 25 },
+    { time: '10:30 AM', label: 'Morning Tea Break', crowdLevel: 'MODERATE', score: 60 },
+    { time: '12:00 PM', label: 'Lunch Starts', crowdLevel: 'MODERATE', score: 65 },
+    { time: '01:00 PM', label: 'Peak Lunch Rush', crowdLevel: 'BUSY', score: 90 },
+    { time: '02:00 PM', label: 'Late Lunch', crowdLevel: 'MODERATE', score: 50 },
+    { time: '03:30 PM', label: 'Snacks Break', crowdLevel: 'BUSY', score: 75 },
+    { time: '05:00 PM', label: 'Closing Soon', crowdLevel: 'QUIET', score: 20 }
   ];
 
   // Reports within last 90 minutes
   const now = Date.now();
   const recent = reports.filter((r) => now - new Date(r.createdAt).getTime() <= 90 * 60 * 1000);
 
-  let currentLevel = 'Moderate';
+  let currentLevel = 'MODERATE';
   let avgWait = '5-10 mins';
 
   if (recent.length > 0) {
-    const scores = { Quiet: 1, Moderate: 2, Busy: 3 };
-    const avgScore = recent.reduce((sum, r) => sum + (scores[r.crowdLevel] || 2), 0) / recent.length;
+    const scores = { QUIET: 1, MODERATE: 2, BUSY: 3, Quiet: 1, Moderate: 2, Busy: 3 };
+    const avgScore =
+      recent.reduce((sum, r) => sum + (scores[r.crowdLevel] || 2), 0) / recent.length;
     if (avgScore <= 1.4) {
-      currentLevel = 'Quiet';
+      currentLevel = 'QUIET';
       avgWait = '< 5 mins';
     } else if (avgScore >= 2.4) {
-      currentLevel = 'Busy';
+      currentLevel = 'BUSY';
       avgWait = '15+ mins';
     } else {
-      currentLevel = 'Moderate';
+      currentLevel = 'MODERATE';
       avgWait = '5-10 mins';
     }
   } else if (reports.length > 0) {
-    currentLevel = reports[0].crowdLevel;
+    currentLevel = CrowdFeedback.normalizeCrowdLevel(reports[0].crowdLevel);
     avgWait = reports[0].estimatedWait || '5-10 mins';
   }
 
@@ -507,12 +580,14 @@ async function getCrowdSummary() {
 async function getAllReviews({ menuItemId, limit = 30 } = {}) {
   if (dbStatus.isMongo) {
     const query = {};
-    if (menuItemId) query.menuItemId = menuItemId;
+    if (menuItemId) {
+      query.$or = [{ menuItem: menuItemId }, { menuItemId: menuItemId }];
+    }
     return await FoodReview.find(query).sort({ createdAt: -1 }).limit(limit);
   } else {
     let reviews = await readJsonFile(REVIEWS_FILE, []);
     if (menuItemId) {
-      reviews = reviews.filter((r) => r.menuItemId === menuItemId);
+      reviews = reviews.filter((r) => (r.menuItemId || r.menuItem) === menuItemId);
     }
     return reviews
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -521,15 +596,38 @@ async function getAllReviews({ menuItemId, limit = 30 } = {}) {
 }
 
 async function createReview(data) {
+  const targetDishId = data.menuItemId || data.menuItem;
+  const ratingNum = Number(data.rating);
+
+  if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+    throw new Error('Rating must be a number between 1 and 5');
+  }
+
+  if (!data.comment || data.comment.trim().length < 3) {
+    throw new Error('Review comment must be at least 3 characters long');
+  }
+
   if (dbStatus.isMongo) {
-    const review = new FoodReview(data);
+    const review = new FoodReview({
+      dishName: data.dishName || 'Canteen Dish',
+      studentName: data.studentName || 'Student',
+      rating: ratingNum,
+      comment: data.comment.trim(),
+      menuItem: targetDishId,
+      menuItemId: targetDishId
+    });
     const saved = await review.save();
 
-    if (data.menuItemId) {
-      const all = await FoodReview.find({ menuItemId: data.menuItemId });
+    if (targetDishId) {
+      const all = await FoodReview.find({
+        $or: [{ menuItem: targetDishId }, { menuItemId: targetDishId }]
+      });
       const avg = all.reduce((sum, r) => sum + r.rating, 0) / all.length;
-      await MenuItem.findByIdAndUpdate(data.menuItemId, {
-        rating: Math.round(avg * 10) / 10,
+      const roundedAvg = Math.round(avg * 10) / 10;
+      await MenuItem.findByIdAndUpdate(targetDishId, {
+        averageRating: roundedAvg,
+        totalReviews: all.length,
+        rating: roundedAvg,
         ratingCount: all.length
       });
     }
@@ -539,24 +637,27 @@ async function createReview(data) {
     const reviews = await readJsonFile(REVIEWS_FILE, []);
     const newRev = {
       _id: generateId(),
-      menuItemId: data.menuItemId || null,
+      menuItemId: targetDishId || null,
       dishName: data.dishName || 'General Canteen Service',
-      studentName: data.studentName,
-      rating: Number(data.rating),
-      comment: data.comment,
+      studentName: data.studentName || 'Student',
+      rating: ratingNum,
+      comment: data.comment.trim(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
     reviews.unshift(newRev);
     await writeJsonFile(REVIEWS_FILE, reviews);
 
-    if (data.menuItemId) {
+    if (targetDishId) {
       const items = await readJsonFile(MENU_FILE, []);
-      const idx = items.findIndex((i) => i._id.toString() === data.menuItemId.toString());
+      const idx = items.findIndex((i) => i._id.toString() === targetDishId.toString());
       if (idx !== -1) {
-        const itemRevs = reviews.filter((r) => r.menuItemId === data.menuItemId);
+        const itemRevs = reviews.filter((r) => (r.menuItemId || r.menuItem) === targetDishId);
         const avg = itemRevs.reduce((sum, r) => sum + r.rating, 0) / itemRevs.length;
-        items[idx].rating = Math.round(avg * 10) / 10;
+        const rounded = Math.round(avg * 10) / 10;
+        items[idx].averageRating = rounded;
+        items[idx].totalReviews = itemRevs.length;
+        items[idx].rating = rounded;
         items[idx].ratingCount = itemRevs.length;
         await writeJsonFile(MENU_FILE, items);
       }
@@ -574,11 +675,12 @@ async function getAdminDashboardStats() {
   const reviews = await getAllReviews();
 
   const totalOrders = orders.length;
-  const activeOrders = orders.filter(
-    (o) => o.status === 'Pending' || o.status === 'Confirmed' || o.status === 'Preparing' || o.status === 'Ready for Pickup'
-  ).length;
-  const completedOrders = orders.filter((o) => o.status === 'Completed').length;
-  const totalRevenue = orders.reduce((sum, o) => sum + (o.total || o.totalAmount || 0), 0);
+  const activeOrders = orders.filter((o) => {
+    const s = Order.normalizeStatus(o.status);
+    return s !== 'COMPLETED' && s !== 'CANCELLED';
+  }).length;
+  const completedOrders = orders.filter((o) => Order.normalizeStatus(o.status) === 'COMPLETED').length;
+  const totalRevenue = orders.reduce((sum, o) => sum + (o.totalAmount || o.total || 0), 0);
   const avgRating =
     reviews.length > 0
       ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
@@ -592,7 +694,11 @@ async function getAdminDashboardStats() {
     avgRating,
     menuItemsCount: menuItems.length,
     crowdLevel: crowdSummary.currentLevel,
-    dbMode: dbStatus.isMongo ? 'MongoDB Connected' : 'Demo Local Mode (Atlas Not Configured)'
+    database: {
+      connected: dbStatus.isMongo,
+      type: dbStatus.isMongo ? 'MongoDB Atlas' : 'Local Fallback',
+      uri: dbStatus.isMongo ? 'Protected URI' : 'Local Fallback'
+    }
   };
 }
 
@@ -619,4 +725,3 @@ module.exports = {
   // Stats
   getAdminDashboardStats
 };
-

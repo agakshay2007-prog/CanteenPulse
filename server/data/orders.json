@@ -1,5 +1,132 @@
 [
   {
+    "_id": "6ae97b7066166d6c3d9b1791",
+    "orderNumber": "CP-113",
+    "studentName": "Aarav Sharma",
+    "rollNumber": "22BCSE101",
+    "phoneNumber": "9876543210",
+    "student": {
+      "name": "Aarav Sharma",
+      "studentId": "22BCSE101",
+      "phone": "9876543210"
+    },
+    "items": [
+      {
+        "menuItemId": "6ae89a08ec82e5f8a27b06fe",
+        "name": "Crispy Masala Dosa",
+        "price": 60,
+        "quantity": 2,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 120,
+    "totalAmount": 120,
+    "total": 120,
+    "pickupTime": "12:30 PM - 12:45 PM",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "specialInstructions": "",
+    "status": "PREPARING",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "",
+    "createdAt": "2026-11-03T06:13:04.323Z",
+    "updatedAt": "2026-11-03T06:13:04.343Z"
+  },
+  {
+    "_id": "6ae97b61dec4a18f4d8156c0",
+    "orderNumber": "CP-112",
+    "studentName": "Aarav Sharma",
+    "rollNumber": "22BCSE101",
+    "phoneNumber": "9876543210",
+    "student": {
+      "name": "Aarav Sharma",
+      "studentId": "22BCSE101",
+      "phone": "9876543210"
+    },
+    "items": [
+      {
+        "menuItemId": "6ae89a08ec82e5f8a27b06fe",
+        "name": "Crispy Masala Dosa",
+        "price": 60,
+        "quantity": 2,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 120,
+    "totalAmount": 120,
+    "total": 120,
+    "pickupTime": "12:30 PM - 12:45 PM",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "specialInstructions": "",
+    "status": "PREPARING",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "",
+    "createdAt": "2026-11-03T06:12:49.261Z",
+    "updatedAt": "2026-11-03T06:12:49.276Z"
+  },
+  {
+    "_id": "6ae97b4ed9129cd23e6b3790",
+    "orderNumber": "CP-111",
+    "studentName": "Aarav Sharma",
+    "rollNumber": "22BCSE101",
+    "phoneNumber": "9876543210",
+    "student": {
+      "name": "Aarav Sharma",
+      "studentId": "22BCSE101",
+      "phone": "9876543210"
+    },
+    "items": [
+      {
+        "menuItemId": "6ae89a08ec82e5f8a27b06fe",
+        "name": "Crispy Masala Dosa",
+        "price": 60,
+        "quantity": 2,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 120,
+    "totalAmount": 120,
+    "total": 120,
+    "pickupTime": "12:30 PM - 12:45 PM",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "specialInstructions": "",
+    "status": "PREPARING",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "",
+    "createdAt": "2026-11-03T06:12:30.968Z",
+    "updatedAt": "2026-11-03T06:12:30.985Z"
+  },
+  {
+    "_id": "6ae97939a9d65d5c59b15077",
+    "orderNumber": "CP-110",
+    "student": {
+      "name": "Vikram Malhotra",
+      "studentId": "22BCSE015",
+      "phone": "9876500001"
+    },
+    "items": [
+      {
+        "menuItemId": "6ae89a08ec82e5f8a27b06fe",
+        "name": "Crispy Masala Dosa",
+        "price": 60,
+        "quantity": 2,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 120,
+    "total": 120,
+    "pickupTime": "1:00 PM - 1:15 PM",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "status": "Preparing",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "",
+    "createdAt": "2026-11-03T06:03:37.889Z",
+    "updatedAt": "2026-11-03T06:03:37.900Z"
+  },
+  {
     "_id": "6ae978085d0564291cc06364",
     "orderNumber": "CP-109",
     "student": {

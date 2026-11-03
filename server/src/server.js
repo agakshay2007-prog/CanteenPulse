@@ -5,8 +5,10 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
 require('dotenv').config(); // Local server/.env fallback
 
-const { connectDB, dbStatus } = require('./config/db');
+const { connectDB, dbStatus, getDbStatus } = require('./config/db');
 const dataService = require('./services/dataService');
+const securityHeaders = require('./middleware/securityHeaders');
+const { generalLimiter } = require('./middleware/rateLimiter');
 const errorHandler = require('./middleware/errorHandler');
 
 // Route Handlers
@@ -19,26 +21,39 @@ const adminRoutes = require('./routes/adminRoutes');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Standard Middlewares
+// Security Headers Middleware
+app.use(securityHeaders);
+
+// CORS configuration
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+
+// Body Parsers with 1MB Payload Limit
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+// Logging
 if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('dev'));
 }
 
-// System Health Endpoint
+// General API Rate Limiter
+app.use('/api', generalLimiter);
+
+// Comprehensive System Health Endpoint
 app.get('/api/health', (req, res) => {
+  const mem = process.memoryUsage();
   res.json({
     status: 'online',
     app: 'CanteenPulse',
     version: '2.0.0',
     timestamp: new Date().toISOString(),
-    database: {
-      type: dbStatus.isMongo ? 'MongoDB' : 'Demo Mode (Resilient Local Persistence)',
-      connected: dbStatus.isMongo,
-      uri: dbStatus.isMongo ? 'Protected URI' : 'Local Fallback'
-    }
+    uptimeSeconds: Math.floor(process.uptime()),
+    memoryUsageMB: {
+      rss: Math.round(mem.rss / 1024 / 1024),
+      heapTotal: Math.round(mem.heapTotal / 1024 / 1024),
+      heapUsed: Math.round(mem.heapUsed / 1024 / 1024)
+    },
+    database: getDbStatus()
   });
 });
 
@@ -57,7 +72,6 @@ app.use((req, res, next) => {
   if (req.method === 'GET' && !req.path.startsWith('/api')) {
     return res.sendFile(path.join(clientDistPath, 'index.html'), (err) => {
       if (err) {
-        // If client hasn't been built yet, show informative development message
         res.status(200).send(`
           <html>
             <head><title>CanteenPulse API Server</title></head>
@@ -88,7 +102,7 @@ async function startServer() {
       console.log('====================================================');
       console.log(`🚀 CanteenPulse Server running on http://localhost:${PORT}`);
       console.log(`🩺 Health check: http://localhost:${PORT}/api/health`);
-      console.log(`📦 Database: ${dbStatus.isMongo ? 'MongoDB' : 'Demo Local Mode (Atlas Not Configured)'}`);
+      console.log(`📦 Database State: ${dbStatus.isMongo ? 'MongoDB Atlas Connected' : 'Resilient Demo Mode'}`);
       console.log('====================================================');
     });
   }
@@ -99,4 +113,3 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 module.exports = app;
-
