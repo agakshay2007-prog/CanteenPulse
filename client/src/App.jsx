@@ -10,6 +10,7 @@ import CrowdFeedbackModal from './components/CrowdFeedbackModal';
 import ReviewsSection from './components/ReviewsSection';
 import ReviewModal from './components/ReviewModal';
 import AdminPortal from './components/AdminPortal';
+import DoodleStickers from './components/DoodleStickers';
 
 import {
   getMenu,
@@ -277,7 +278,10 @@ export default function App() {
   const cartSubtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <div className="min-h-screen flex flex-col font-sans relative campus-bg-doodles">
+    <div className="min-h-screen flex flex-col font-sans relative campus-bg-doodles overflow-x-hidden">
+      
+      {/* Hand-drawn Animated Corner Stickers (Exact match to reference screenshots) */}
+      <DoodleStickers />
       
       {/* Top Navbar */}
       <Navbar
@@ -302,7 +306,7 @@ export default function App() {
           onRefreshMenu={loadMenuData}
         />
       ) : (
-        <main className="flex-1 pb-24">
+        <main className="flex-1 pb-24 relative z-10">
           
           {/* Hero Section with Greeting, Category Pills & Big Headline */}
           <Hero

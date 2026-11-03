@@ -1,5 +1,61 @@
 [
   {
+    "_id": "6ae978085d0564291cc06364",
+    "orderNumber": "CP-109",
+    "student": {
+      "name": "Vikram Malhotra",
+      "studentId": "22BCSE015",
+      "phone": "9876500001"
+    },
+    "items": [
+      {
+        "menuItemId": "6ae89a08ec82e5f8a27b06fe",
+        "name": "Crispy Masala Dosa",
+        "price": 60,
+        "quantity": 2,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 120,
+    "total": 120,
+    "pickupTime": "1:00 PM - 1:15 PM",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "status": "Preparing",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "",
+    "createdAt": "2026-11-03T05:58:32.146Z",
+    "updatedAt": "2026-11-03T05:58:32.169Z"
+  },
+  {
+    "_id": "6ae97665e04d97ec073da1ae",
+    "orderNumber": "CP-108",
+    "student": {
+      "name": "swerfg",
+      "studentId": "43",
+      "phone": "5645454545"
+    },
+    "items": [
+      {
+        "menuItemId": "6ae89a08b668905b94dbd434",
+        "name": "South Indian Mini Thali",
+        "price": 90,
+        "quantity": 1,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 90,
+    "total": 90,
+    "pickupTime": "1:00 PM - 1:15 PM (Lunch Slot 1)",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "status": "Pending",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "",
+    "createdAt": "2026-11-03T05:51:33.903Z",
+    "updatedAt": "2026-11-03T05:51:33.903Z"
+  },
+  {
     "_id": "6ae974a74d2c4f7b6d96cb79",
     "orderNumber": "CP-107",
     "student": {

@@ -1,4 +1,4 @@
-/* CanteenPulse - CampusBites Inspired UI Styles */
+/* CanteenPulse - CampusBites Inspired UI Styles with Animated Doodles */
 
 @layer base {
   body {
@@ -7,13 +7,6 @@
     color: #111827;
     min-height: 100vh;
   }
-}
-
-/* Background doodle patterns overlay */
-.campus-bg-doodles {
-  background-image: 
-    radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 90% 30%, rgba(245, 158, 11, 0.05) 0%, transparent 40%);
 }
 
 /* Custom scrollbars */
@@ -39,6 +32,46 @@
 .campus-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 16px 32px -8px rgba(16, 185, 129, 0.16);
+}
+
+/* Subtle Floating Animations for Hand-Drawn Stickers */
+@keyframes floatGentle1 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-9px) rotate(2deg);
+  }
+}
+
+@keyframes floatGentle2 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(8px) rotate(-2deg);
+  }
+}
+
+@keyframes floatGentle3 {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(-1.5deg);
+  }
+}
+
+.float-sticker-1 {
+  animation: floatGentle1 6.5s ease-in-out infinite;
+}
+
+.float-sticker-2 {
+  animation: floatGentle2 7.5s ease-in-out infinite 0.8s;
+}
+
+.float-sticker-3 {
+  animation: floatGentle3 8s ease-in-out infinite 1.5s;
 }
 
 /* Pulse animation */
