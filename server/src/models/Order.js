@@ -169,6 +169,7 @@ const orderSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    collection: 'orders',
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
   }

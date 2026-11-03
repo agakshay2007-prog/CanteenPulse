@@ -1,51 +1,77 @@
 /**
- * Database Configuration & Connection Manager
- * Manages Mongoose connection lifecycle, events, error handling, and readiness checks.
+ * Database Configuration & MongoDB Atlas Connection Manager
+ * Manages Mongoose connection lifecycle, event logging, credential masking,
+ * error handling, and database readiness checks.
  */
+
+const path = require('path');
+// Ensure root .env is loaded regardless of how this file is imported
+require('dotenv').config({ path: path.join(__dirname, '..', '..', '..', '.env') });
+require('dotenv').config({ path: path.join(__dirname, '..', '..', '.env') });
+require('dotenv').config();
 
 const mongoose = require('mongoose');
 
-const dbStatus = {
-  connected: false,
-  uri: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/canteenpulse',
-  host: null,
-  name: null,
-  lastError: null,
-  connectionAttempts: 0
-};
-
-// Mask sensitive credentials in URI for safe logging
-function getMaskedUri(uri) {
-  if (!uri) return 'undefined';
+// Mask sensitive credentials in URI for safe terminal and health logging
+function getMaskedUri(rawUri) {
+  if (!rawUri || typeof rawUri !== 'string') return 'not_configured';
   try {
-    return uri.replace(/\/\/([^:]+):([^@]+)@/, '//$1:****@');
+    return rawUri.replace(/\/\/([^:]+):([^@]+)@/, '//$1:****@');
   } catch {
-    return 'protected-uri';
+    return 'protected_uri';
   }
 }
 
-// Setup Mongoose Connection Lifecycle Event Listeners
+// Check if URI is still an unconfigured placeholder
+function isPlaceholderUri(uri) {
+  if (!uri) return true;
+  return (
+    uri.includes('<username>') ||
+    uri.includes('<password>') ||
+    uri.includes('<cluster-url>') ||
+    uri.includes('username:password')
+  );
+}
+
+const dbStatus = {
+  uri: process.env.MONGODB_URI || '',
+  host: null,
+  name: null,
+  lastError: null,
+  connectionAttempts: 0,
+  // Dynamic getters tied directly to Mongoose connection readyState
+  get connected() {
+    return mongoose.connection.readyState === 1;
+  },
+  get isMongo() {
+    return mongoose.connection.readyState === 1;
+  }
+};
+
+// ================= MONGOOSE EVENT LISTENERS =================
 mongoose.connection.on('connected', () => {
-  dbStatus.connected = true;
   dbStatus.host = mongoose.connection.host;
   dbStatus.name = mongoose.connection.name;
   dbStatus.lastError = null;
-  console.log(`✅ [MongoDB Connected] Host: ${dbStatus.host} | Database: ${dbStatus.name}`);
+  console.log('----------------------------------------------------');
+  console.log(`✅ [MongoDB Atlas Connected]`);
+  console.log(`   Host:     ${dbStatus.host}`);
+  console.log(`   Database: ${dbStatus.name}`);
+  console.log(`   Cluster:  ${dbStatus.host}`);
+  console.log('----------------------------------------------------');
 });
 
 mongoose.connection.on('error', (err) => {
-  dbStatus.connected = false;
   dbStatus.lastError = err.message;
   console.error(`❌ [MongoDB Connection Error]`, err.message);
 });
 
 mongoose.connection.on('disconnected', () => {
-  dbStatus.connected = false;
-  console.warn(`⚠️  [MongoDB Disconnected] Database connection lost.`);
+  console.warn(`⚠️  [MongoDB Disconnected] Database connection closed.`);
 });
 
 mongoose.connection.on('reconnected', () => {
-  dbStatus.connected = true;
+  dbStatus.lastError = null;
   console.log(`🔄 [MongoDB Reconnected] Successfully restored database connection.`);
 });
 
@@ -53,11 +79,13 @@ mongoose.connection.on('reconnected', () => {
 async function gracefulShutdown(signal) {
   console.log(`\n🛑 Received ${signal}. Closing MongoDB connection gracefully...`);
   try {
-    await mongoose.connection.close(false);
-    console.log('📦 MongoDB connection closed. Exiting process.');
+    if (mongoose.connection.readyState !== 0) {
+      await mongoose.connection.close(false);
+      console.log('📦 MongoDB connection closed. Exiting process.');
+    }
     process.exit(0);
   } catch (err) {
-    console.error('Error during database disconnection:', err);
+    console.error('Error during database disconnection:', err.message);
     process.exit(1);
   }
 }
@@ -66,35 +94,59 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 
 /**
- * Connect to MongoDB Atlas or Local MongoDB
+ * Connect to MongoDB Atlas
  * @param {string} [customUri]
  * @returns {Promise<boolean>}
  */
 async function connectDB(customUri) {
-  const uri = customUri || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/canteenpulse';
+  const uri = customUri || process.env.MONGODB_URI || '';
   dbStatus.uri = uri;
   dbStatus.connectionAttempts += 1;
 
+  // 1. Guard against unconfigured or placeholder credentials
+  if (!uri || isPlaceholderUri(uri)) {
+    console.warn('\n╔══════════════════════════════════════════════════════════════════════╗');
+    console.warn('║              🌿 CANTEENPULSE - MONGODB ATLAS SETUP GUIDE             ║');
+    console.warn('╠══════════════════════════════════════════════════════════════════════╣');
+    console.warn('║  Your .env file requires your real MongoDB Atlas connection string.  ║');
+    console.warn('║                                                                      ║');
+    console.warn('║  👉 Step 1: Open C:\\Canteenplus\\.env                                  ║');
+    console.warn('║  👉 Step 2: Set your Atlas URI:                                      ║');
+    console.warn('║     MONGODB_URI=mongodb+srv://<user>:<password>@cluster0.xyz.mongodb.net/canteenpulse?retryWrites=true&w=majority ║');
+    console.warn('║                                                                      ║');
+    console.warn('║  Status: Resilient Demo Mode is active until Atlas credentials       ║');
+    console.warn('║          are saved in your local .env file.                          ║');
+    console.warn('╚══════════════════════════════════════════════════════════════════════╝\n');
+    dbStatus.lastError = 'MongoDB Atlas URI not configured or contains placeholder';
+    return false;
+  }
+
+  // 2. Attempt real MongoDB connection
   try {
+    console.log(`⏳ Connecting to MongoDB Atlas: ${getMaskedUri(uri)} ...`);
     await mongoose.connect(uri, {
-      serverSelectionTimeoutMS: 3000,
+      dbName: 'canteenpulse', // Enforce 'canteenpulse' database
+      serverSelectionTimeoutMS: 5000, // 5s timeout to avoid blocking server boot
       socketTimeoutMS: 45000,
       autoIndex: true
     });
 
-    dbStatus.connected = true;
     dbStatus.host = mongoose.connection.host;
     dbStatus.name = mongoose.connection.name;
+    dbStatus.lastError = null;
     return true;
   } catch (error) {
-    dbStatus.connected = false;
     dbStatus.lastError = error.message;
 
-    console.warn(`⚠️  [MongoDB Connection Notice] Unable to connect to: ${getMaskedUri(uri)}`);
+    console.warn(`\n⚠️  [MongoDB Atlas Connection Notice]`);
+    console.warn(`   Target: ${getMaskedUri(uri)}`);
     console.warn(`   Reason: ${error.message}`);
-    console.warn(`💡 [Atlas Setup Guide] Set MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/canteenpulse in your .env file.`);
+    console.warn(`💡 [Troubleshooting Checklist]:`);
+    console.warn(`   1. Check username and password in .env (special chars must be URL-encoded).`);
+    console.warn(`   2. In MongoDB Atlas Network Access, ensure IP 0.0.0.0/0 (allow from anywhere) is whitelisted.`);
+    console.warn(`   3. Ensure Database Name is 'canteenpulse'.`);
+    console.warn(`   Application will operate in Resilient Demo Mode until Atlas is connected.\n`);
 
-    // If explicit demo mode is allowed, let the service know
     return false;
   }
 }
@@ -108,7 +160,7 @@ function isDbConnected() {
 }
 
 /**
- * Get current database status summary
+ * Get current database status summary (for /api/health and stats)
  */
 function getDbStatus() {
   const states = {
@@ -120,17 +172,24 @@ function getDbStatus() {
 
   const readyState = mongoose.connection.readyState;
   const isMongo = readyState === 1;
-  const isAtlas = dbStatus.uri.includes('mongodb+srv://') || dbStatus.uri.includes('mongodb.net');
+  const isAtlas =
+    dbStatus.uri.startsWith('mongodb+srv://') ||
+    dbStatus.uri.includes('.mongodb.net');
+
+  let dbType = 'Resilient Offline Demo Mode';
+  if (isMongo) {
+    dbType = isAtlas ? 'MongoDB Atlas (Cloud)' : 'Local MongoDB';
+  }
 
   return {
     connected: isMongo,
-    state: states[readyState] || 'unknown',
-    type: isMongo ? (isAtlas ? 'MongoDB Atlas' : 'Local MongoDB') : 'Resilient Offline Demo Mode',
+    state: states[readyState] || 'disconnected',
+    type: dbType,
+    database: isMongo ? (mongoose.connection.name || 'canteenpulse') : 'canteenpulse (local)',
+    host: isMongo ? mongoose.connection.host : null,
     uri: getMaskedUri(dbStatus.uri),
-    host: dbStatus.host || (isMongo ? mongoose.connection.host : null),
-    database: dbStatus.name || (isMongo ? mongoose.connection.name : null),
-    lastError: dbStatus.lastError,
-    isAtlas
+    isAtlas,
+    lastError: isMongo ? null : dbStatus.lastError
   };
 }
 
@@ -142,17 +201,16 @@ function requireDbConnection(req, res, next) {
     return next();
   }
 
-  // If local fallback / demo mode is active and allowed
-  if (process.env.ALLOW_OFFLINE_DEMO === 'true' || !process.env.STRICT_DB) {
-    req.isFallbackMode = true;
-    return next();
+  if (process.env.STRICT_DB === 'true') {
+    return res.status(503).json({
+      success: false,
+      message: 'MongoDB Atlas is not currently connected. Please configure MONGODB_URI in .env.',
+      error: dbStatus.lastError || 'Database disconnected'
+    });
   }
 
-  return res.status(503).json({
-    success: false,
-    message: 'Database service unavailable. Please ensure MongoDB or MongoDB Atlas is running.',
-    error: dbStatus.lastError || 'MongoDB disconnected'
-  });
+  req.isFallbackMode = true;
+  next();
 }
 
 module.exports = {
@@ -160,5 +218,6 @@ module.exports = {
   isDbConnected,
   getDbStatus,
   requireDbConnection,
+  getMaskedUri,
   dbStatus
 };

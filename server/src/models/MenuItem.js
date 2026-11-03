@@ -76,6 +76,7 @@ const menuItemSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    collection: 'menuitems',
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
   }

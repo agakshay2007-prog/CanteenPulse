@@ -44,21 +44,59 @@ async function writeJsonFile(filePath, data) {
   await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf8');
 }
 
-// Initialization and seeding
+// Safe, Idempotent Database Seeding
 async function initializeData() {
   if (dbStatus.isMongo) {
     try {
+      // 1. Seed Menu Items (Never overwrite, prevent duplicates)
       const menuCount = await MenuItem.countDocuments();
       if (menuCount === 0) {
-        console.log('🌱 Seeding initial data to MongoDB...');
-        await MenuItem.insertMany(initialMenuItems);
-        await CrowdFeedback.insertMany(initialCrowdFeedback);
-        await FoodReview.insertMany(initialReviews);
-        await Order.insertMany(initialOrders);
-        console.log('✅ MongoDB collections initialized.');
+        console.log(`🌱 Seeding initial menu (${initialMenuItems.length} dishes) into MongoDB Atlas...`);
+        const preparedMenu = initialMenuItems.map((item) => ({
+          ...item,
+          averageRating: item.rating || 4.5,
+          totalReviews: item.ratingCount || 1
+        }));
+        await MenuItem.insertMany(preparedMenu, { ordered: false });
+        console.log('✅ Menu items initialized in MongoDB Atlas.');
+      } else {
+        // Safe duplicate-check: only add dishes that do not already exist by name
+        for (const item of initialMenuItems) {
+          const exists = await MenuItem.findOne({ name: item.name });
+          if (!exists) {
+            await MenuItem.create({
+              ...item,
+              averageRating: item.rating || 4.5,
+              totalReviews: item.ratingCount || 1
+            });
+          }
+        }
       }
+
+      // 2. Seed Crowd Feedback (Only if empty, never delete student submissions)
+      const crowdCount = await CrowdFeedback.countDocuments();
+      if (crowdCount === 0 && Array.isArray(initialCrowdFeedback) && initialCrowdFeedback.length > 0) {
+        console.log('🌱 Seeding initial crowd baseline reports into MongoDB Atlas...');
+        await CrowdFeedback.insertMany(initialCrowdFeedback, { ordered: false });
+      }
+
+      // 3. Seed Food Reviews (Only if empty, never delete student reviews)
+      const reviewCount = await FoodReview.countDocuments();
+      if (reviewCount === 0 && Array.isArray(initialReviews) && initialReviews.length > 0) {
+        console.log('🌱 Seeding initial sample reviews into MongoDB Atlas...');
+        await FoodReview.insertMany(initialReviews, { ordered: false });
+      }
+
+      // 4. Seed Orders (Only if empty, never delete student orders)
+      const orderCount = await Order.countDocuments();
+      if (orderCount === 0 && Array.isArray(initialOrders) && initialOrders.length > 0) {
+        console.log('🌱 Seeding initial demonstration orders into MongoDB Atlas...');
+        await Order.insertMany(initialOrders, { ordered: false });
+      }
+
+      console.log('✅ MongoDB Atlas database verification & idempotent check complete.');
     } catch (err) {
-      console.error('MongoDB initialization warning:', err.message);
+      console.warn('MongoDB initialization notice:', err.message);
     }
   } else {
     // Local JSON fail-safe fallback
@@ -67,6 +105,8 @@ async function initializeData() {
       const seeded = initialMenuItems.map((item) => ({
         _id: generateId(),
         ...item,
+        averageRating: item.rating || 4.5,
+        totalReviews: item.ratingCount || 1,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       }));

@@ -45,6 +45,7 @@ const crowdFeedbackSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    collection: 'crowdfeedbacks',
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
   }

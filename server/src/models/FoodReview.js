@@ -41,6 +41,7 @@ const foodReviewSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    collection: 'foodreviews',
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
   }
