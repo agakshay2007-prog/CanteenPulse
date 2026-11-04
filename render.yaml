@@ -16,3 +16,4 @@ services:
         sync: false
       - key: ADMIN_SECRET
         sync: false
+
