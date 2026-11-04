@@ -133,7 +133,7 @@ async function startServer() {
   const dbConnected = await connectDB();
 
   if (process.env.NODE_ENV === 'production' && !dbConnected) {
-    console.error('🚨 [FATAL ERROR] MongoDB Atlas connection failed in production mode. Aborting startup.');
+    console.error(`🚨 [FATAL ERROR] MongoDB Atlas connection failed in production mode (${dbStatus.lastError || 'Check Network Access / Credentials'}). Aborting startup.`);
     process.exit(1);
   }
 
