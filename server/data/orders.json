@@ -1,5 +1,177 @@
 [
   {
+    "_id": "6aeaad980e062a5958436133",
+    "orderNumber": "CP-124",
+    "studentName": "Aarav Sharma",
+    "rollNumber": "22BCSE101",
+    "phoneNumber": "9876543210",
+    "student": {
+      "name": "Aarav Sharma",
+      "studentId": "22BCSE101",
+      "phone": "9876543210"
+    },
+    "items": [
+      {
+        "menuItemId": "6aea7cec0b663b8c74841147",
+        "name": "Coffee",
+        "price": 20,
+        "quantity": 2,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 40,
+    "totalAmount": 40,
+    "total": 40,
+    "pickupTime": "12:30 PM - 12:45 PM",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "specialInstructions": "",
+    "status": "PREPARING",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "",
+    "createdAt": "2026-11-04T03:59:20.023Z",
+    "updatedAt": "2026-11-04T03:59:20.047Z"
+  },
+  {
+    "_id": "6aeaad090684bb47406d10f4",
+    "orderNumber": "CP-123",
+    "studentName": "Aarav Sharma",
+    "rollNumber": "22BCSE101",
+    "phoneNumber": "9876543210",
+    "student": {
+      "name": "Aarav Sharma",
+      "studentId": "22BCSE101",
+      "phone": "9876543210"
+    },
+    "items": [
+      {
+        "menuItemId": "6aea7cec0b663b8c74841147",
+        "name": "Coffee",
+        "price": 20,
+        "quantity": 2,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 40,
+    "totalAmount": 40,
+    "total": 40,
+    "pickupTime": "12:30 PM - 12:45 PM",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "specialInstructions": "",
+    "status": "PREPARING",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "",
+    "createdAt": "2026-11-04T03:56:57.015Z",
+    "updatedAt": "2026-11-04T03:56:57.033Z"
+  },
+  {
+    "_id": "6aeaace598cd4f5d70e9b4ee",
+    "orderNumber": "CP-122",
+    "studentName": "Aarav Sharma",
+    "rollNumber": "22BCSE101",
+    "phoneNumber": "9876543210",
+    "student": {
+      "name": "Aarav Sharma",
+      "studentId": "22BCSE101",
+      "phone": "9876543210"
+    },
+    "items": [
+      {
+        "menuItemId": "6aea7cec0b663b8c74841147",
+        "name": "Coffee",
+        "price": 20,
+        "quantity": 2,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 40,
+    "totalAmount": 40,
+    "total": 40,
+    "pickupTime": "12:30 PM - 12:45 PM",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "specialInstructions": "",
+    "status": "PREPARING",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "",
+    "createdAt": "2026-11-04T03:56:21.626Z",
+    "updatedAt": "2026-11-04T03:56:21.661Z"
+  },
+  {
+    "_id": "6aea79966d8ac02ff0233813",
+    "orderNumber": "CP-121",
+    "studentName": "arun",
+    "rollNumber": "21",
+    "phoneNumber": "2323232323",
+    "student": {
+      "name": "arun",
+      "studentId": "21",
+      "phone": "2323232323"
+    },
+    "items": [
+      {
+        "menuItemId": "6ae89a08c44d213d345bd4c2",
+        "name": "Chole Bhature Platter",
+        "price": 80,
+        "quantity": 1,
+        "specialInstructions": "less spicy"
+      }
+    ],
+    "subtotal": 80,
+    "totalAmount": 80,
+    "total": 80,
+    "pickupTime": "1:00 PM - 1:15 PM (Lunch Slot 1)",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "specialInstructions": "",
+    "status": "PENDING",
+    "paymentMethod": "UPI / Online",
+    "paymentStatus": "Paid",
+    "notes": "",
+    "createdAt": "2026-11-04T00:17:26.495Z",
+    "updatedAt": "2026-11-04T00:17:26.495Z"
+  },
+  {
+    "_id": "6aea7928a5cd9481027662e4",
+    "orderNumber": "CP-120",
+    "studentName": "arun",
+    "rollNumber": "21",
+    "phoneNumber": "2323232323",
+    "student": {
+      "name": "arun",
+      "studentId": "21",
+      "phone": "2323232323"
+    },
+    "items": [
+      {
+        "menuItemId": "6ae89a08ec82e5f8a27b06fe",
+        "name": "Crispy Masala Dosa",
+        "price": 60,
+        "quantity": 1,
+        "specialInstructions": ""
+      },
+      {
+        "menuItemId": "6ae89a08c44d213d345bd4c2",
+        "name": "Chole Bhature Platter",
+        "price": 80,
+        "quantity": 1,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 140,
+    "totalAmount": 140,
+    "total": 140,
+    "pickupTime": "1:00 PM - 1:15 PM (Lunch Slot 1)",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "specialInstructions": "",
+    "status": "PENDING",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "",
+    "createdAt": "2026-11-04T00:15:36.517Z",
+    "updatedAt": "2026-11-04T00:15:36.517Z"
+  },
+  {
     "_id": "6ae99da7057d0d6556bfe7ed",
     "orderNumber": "CP-119",
     "studentName": "Aarav Sharma",
@@ -513,12 +685,12 @@
     "total": 120,
     "pickupTime": "1:00 PM - 1:15 PM",
     "pickupCounter": "Counter #1 (Express Pickup)",
-    "status": "Preparing",
+    "status": "READY",
     "paymentMethod": "Pay at Counter",
     "paymentStatus": "Pending",
     "notes": "",
     "createdAt": "2026-11-02T14:11:20.130Z",
-    "updatedAt": "2026-11-02T14:11:20.150Z"
+    "updatedAt": "2026-11-04T00:18:51.846Z"
   },
   {
     "_id": "6ae89a083f0bd788b07ba6a2",
@@ -583,11 +755,11 @@
     "total": 120,
     "pickupTime": "1:15 PM - 1:30 PM",
     "pickupCounter": "Counter #2 (Snack & Chinese)",
-    "status": "Preparing",
+    "status": "READY",
     "paymentMethod": "Pay at Counter",
     "paymentStatus": "Pending",
     "notes": "In wok now",
     "createdAt": "2026-11-02T14:01:20.044Z",
-    "updatedAt": "2026-11-02T14:01:20.044Z"
+    "updatedAt": "2026-11-04T00:18:35.371Z"
   }
 ]

@@ -78,11 +78,18 @@ const crowdLimiter = createRateLimiter({
   message: 'Crowd feedback submission limit reached. Please wait before submitting another report.'
 });
 
+const reviewLimiter = createRateLimiter({
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 10, // 10 reviews per 5 minutes
+  message: 'Review submission limit reached. Please wait before submitting another review.'
+});
+
 module.exports = {
   createRateLimiter,
   generalLimiter,
   loginLimiter,
   orderLimiter,
-  crowdLimiter
+  crowdLimiter,
+  reviewLimiter
 };
 

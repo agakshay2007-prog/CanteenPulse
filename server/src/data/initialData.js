@@ -175,7 +175,7 @@ const initialMenuItems = [
     isAvailable: true,
     preparationTime: 3,
     isVeg: true,
-    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1593701461250-d7b22dfd3a77?w=600&auto=format&fit=crop&q=80',
     rating: 4.7,
     ratingCount: 34,
     isPopular: false,

@@ -5,8 +5,28 @@ const crypto = require('crypto');
  * Uses HMAC-SHA256 to issue signed, tamper-proof bearer tokens with 24-hour expiration.
  */
 
-const getSecretKey = () => process.env.ADMIN_SECRET || 'canteenpulse_secure_admin_hmac_secret_2026';
-const getConfiguredPasscode = () => process.env.ADMIN_PASSCODE || 'admin123';
+const getSecretKey = () => {
+  const secret = process.env.ADMIN_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'production') {
+      console.warn('⚠️ [SECURITY WARNING] ADMIN_SECRET is not configured in production environment. A strong high-entropy secret must be set.');
+    }
+    return 'canteenpulse_secure_admin_hmac_secret_2026';
+  }
+  return secret;
+};
+
+const getConfiguredPasscode = () => {
+  const passcode = process.env.ADMIN_PASSCODE;
+  if (!passcode) {
+    if (process.env.NODE_ENV === 'production') {
+      console.warn('⚠️ [SECURITY WARNING] ADMIN_PASSCODE is not configured in production environment. Default demo passcode disabled in production.');
+      return '';
+    }
+    return 'admin123';
+  }
+  return passcode;
+};
 
 /**
  * Generate a signed token: base64(payload).signature
@@ -117,8 +137,8 @@ const verifyAdmin = (req, res, next) => {
     return next();
   }
 
-  // 2. Fallback check for direct passcode (convenient for automated tests and CLI curls)
-  if (token === configuredPasscode || token === customSecret) {
+  // 2. Fallback check for direct passcode using constant-time comparison
+  if (verifyPasscode(token)) {
     req.admin = { role: 'ADMIN', username: 'canteen_admin', directPasscode: true };
     req.isAdmin = true;
     return next();
