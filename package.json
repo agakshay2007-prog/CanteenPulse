@@ -7,7 +7,7 @@
     "start": "node server/src/server.js",
     "server": "node server/src/server.js",
     "client": "cd client && npm run dev",
-    "build": "cd client && npm run build",
+    "build": "npm install --prefix client && npm run build --prefix client",
     "test": "node server/test/run_all_tests.js",
     "test:unit": "node server/test/api.test.js",
     "test:atlas": "node server/test/atlas.integration.test.js",

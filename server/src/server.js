@@ -64,6 +64,14 @@ app.use('/api/crowd', crowdRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/admin', adminRoutes);
 
+// Unmatched /api routes return structured 404 JSON instead of HTML
+app.use('/api', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `API endpoint not found: ${req.method} ${req.originalUrl}`
+  });
+});
+
 // Serve built React client in production if client/dist exists
 const clientDistPath = path.join(__dirname, '..', '..', 'client', 'dist');
 app.use(express.static(clientDistPath));
@@ -92,16 +100,50 @@ app.use((req, res, next) => {
 // Centralized Error Handling Middleware
 app.use(errorHandler);
 
+// Production pre-flight environment security validator
+function validateProductionEnv() {
+  if (process.env.NODE_ENV === 'production') {
+    const missing = [];
+    const uri = process.env.MONGODB_URI;
+    if (!uri || uri.includes('<username>') || uri.includes('<password>') || uri.includes('<cluster-url>')) {
+      missing.push('MONGODB_URI (Valid MongoDB Atlas connection string required in production)');
+    }
+    const passcode = process.env.ADMIN_PASSCODE;
+    if (!passcode || passcode === 'admin123') {
+      missing.push('ADMIN_PASSCODE (Strong environment-based admin passcode required; default demo passcode rejected in production)');
+    }
+    const secret = process.env.ADMIN_SECRET;
+    if (!secret || secret === 'canteenpulse_secure_admin_hmac_secret_2026' || secret === 'canteenpulse_secret_key_2026') {
+      missing.push('ADMIN_SECRET (Strong environment-based HMAC secret key required in production)');
+    }
+
+    if (missing.length > 0) {
+      console.error('\n🚨 [FATAL CONFIGURATION ERROR - PRODUCTION STARTUP ABORTED]');
+      console.error('The application cannot start in production mode because the following required environment variables are missing or insecure:');
+      missing.forEach((err) => console.error(`  ❌ ${err}`));
+      console.error('\nPlease configure these environment variables securely in your hosting dashboard (e.g. Render Environment settings).\n');
+      process.exit(1);
+    }
+  }
+}
+
 // Boot function
 async function startServer() {
-  await connectDB();
+  validateProductionEnv();
+  const dbConnected = await connectDB();
+
+  if (process.env.NODE_ENV === 'production' && !dbConnected) {
+    console.error('🚨 [FATAL ERROR] MongoDB Atlas connection failed in production mode. Aborting startup.');
+    process.exit(1);
+  }
+
   await dataService.initializeData();
 
   if (process.env.NODE_ENV !== 'test') {
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
       console.log('====================================================');
-      console.log(`🚀 CanteenPulse Server running on http://localhost:${PORT}`);
-      console.log(`🩺 Health check: http://localhost:${PORT}/api/health`);
+      console.log(`🚀 CanteenPulse Server running on http://0.0.0.0:${PORT}`);
+      console.log(`🩺 Health check: http://0.0.0.0:${PORT}/api/health`);
       console.log(`📦 Database State: ${dbStatus.isMongo ? 'MongoDB Atlas Connected' : 'Resilient Demo Mode'}`);
       console.log('====================================================');
     });

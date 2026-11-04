@@ -1,5 +1,38 @@
 [
   {
+    "_id": "6aeaaf97ee3431cd75a13e16",
+    "orderNumber": "CP-125",
+    "studentName": "Aarav Sharma",
+    "rollNumber": "22BCSE101",
+    "phoneNumber": "9876543210",
+    "student": {
+      "name": "Aarav Sharma",
+      "studentId": "22BCSE101",
+      "phone": "9876543210"
+    },
+    "items": [
+      {
+        "menuItemId": "6aea7cec0b663b8c74841147",
+        "name": "Coffee",
+        "price": 20,
+        "quantity": 2,
+        "specialInstructions": ""
+      }
+    ],
+    "subtotal": 40,
+    "totalAmount": 40,
+    "total": 40,
+    "pickupTime": "12:30 PM - 12:45 PM",
+    "pickupCounter": "Counter #1 (Express Pickup)",
+    "specialInstructions": "",
+    "status": "PREPARING",
+    "paymentMethod": "Pay at Counter",
+    "paymentStatus": "Pending",
+    "notes": "",
+    "createdAt": "2026-11-04T04:07:51.972Z",
+    "updatedAt": "2026-11-04T04:07:51.989Z"
+  },
+  {
     "_id": "6aeaad980e062a5958436133",
     "orderNumber": "CP-124",
     "studentName": "Aarav Sharma",
